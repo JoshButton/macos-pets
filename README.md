@@ -24,6 +24,18 @@ menu bar.
 > First launch: the app is ad-hoc signed, so Gatekeeper may refuse to open it.
 > Right-click it in Finder → Open → Open to allow it once.
 
+## Raycast control
+
+```bash
+./install.sh --raycast-scripts   # writes 20 script commands
+```
+
+This adds pet add/remove, ball throw/place, and hide/show commands to Raycast.
+They talk to the running app through `~/.config/macos-pets/commands/` — the
+same channel as `macos-pets send <add|throw|place|hide|show|toggle|...>`,
+which works from any terminal or script. Point Raycast at
+`~/.config/raycast/scripts` if it doesn't pick them up automatically.
+
 ## Sharing
 
 Push this directory to a Git repo; GitHub Actions (`.github/workflows/build.yml`)
