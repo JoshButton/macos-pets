@@ -8,6 +8,8 @@ used under their respective licences with attribution to the original artists.
 
 - Repository: https://github.com/tonybaloney/vscode-pets
 - Files: `media/<species>/<variant>_<pose>_8fps.gif` (369 files, unmodified)
+- App icon: `icon.upstream.png`, verbatim copy of the upstream `icon.png
+  (a collage of the same pet sprites), used as this app's bundle icon
 - Retrieved: October 2026
 
 ## Licences

@@ -49,6 +49,8 @@ cat > "$DEST/Contents/Info.plist" <<'PLIST'
     <string>dev.local.macos-pets</string>
     <key>CFBundleExecutable</key>
     <string>macos-pets</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -68,8 +70,24 @@ cat > "$DEST/Contents/Info.plist" <<'PLIST'
 </plist>
 PLIST
 
-# Generate a pawprint icon so the bundle is not icon-less in the Finder.
-cat > /tmp/macos-pets-icon.swift <<'SWIFT'
+# App icon: the upstream icon.png, verbatim (see Assets/vscode-pets/).
+# Upscaled into an iconset since the source is 128px; sips pads cleanly.
+if [ -f Assets/vscode-pets/icon.upstream.png ]; then
+    rm -rf /tmp/macos-pets.iconset
+    mkdir -p /tmp/macos-pets.iconset
+    for s in 16 32 128 256 512; do
+        sips -z $s $s Assets/vscode-pets/icon.upstream.png \
+            --out /tmp/macos-pets.iconset/icon_${s}x${s}.png >/dev/null 2>&1
+        sips -z $s $s Assets/vscode-pets/icon.upstream.png \
+            --out /tmp/macos-pets.iconset/icon_$((s/2))x$((s/2))@2x.png >/dev/null 2>&1
+    done
+    iconutil -c icns /tmp/macos-pets.iconset \
+        -o "$DEST/Contents/Resources/AppIcon.icns" 2>/dev/null || true
+    rm -rf /tmp/macos-pets.iconset
+fi
+# Fallback so the bundle is never icon-less if conversion failed.
+if [ ! -f "$DEST/Contents/Resources/AppIcon.icns" ]; then
+    cat > /tmp/macos-pets-icon.swift <<'SWIFT'
 import AppKit
 let size = 512
 let image = NSImage(size: NSSize(width: size, height: size))
@@ -88,15 +106,15 @@ if let tiff = image.tiffRepresentation,
     try? png.write(to: URL(fileURLWithPath: CommandLine.arguments[1]))
 }
 SWIFT
-swiftc -O -o /tmp/macos-pets-icon /tmp/macos-pets-icon.swift 2>/dev/null
-/tmp/macos-pets-icon "$DEST/Contents/Resources/icon.png" 2>/dev/null || true
-
-cat > "$DEST/Contents/Resources/AppIcon.icns" <<'ICNS'
-ICNS
-rm -f "$DEST/Contents/Resources/AppIcon.icns"
-if [ -f "$DEST/Contents/Resources/icon.png" ]; then
-    iconutil -c icns "$DEST/Contents/Resources/icon.png" -o "$DEST/Contents/Resources/AppIcon.icns" 2>/dev/null || true
-    rm -f "$DEST/Contents/Resources/icon.png"
+    if swiftc -O -o /tmp/macos-pets-icon /tmp/macos-pets-icon.swift 2>/dev/null \
+        && /tmp/macos-pets-icon "$DEST/Contents/Resources/icon.png" 2>/dev/null \
+        && iconutil -c icns "$DEST/Contents/Resources/icon.png" \
+            -o "$DEST/Contents/Resources/AppIcon.icns" 2>/dev/null; then
+        rm -f "$DEST/Contents/Resources/icon.png"
+    else
+        rm -f "$DEST/Contents/Resources/icon.png"
+        echo "  (icon generation skipped)"
+    fi
 fi
 
 # Ad-hoc signature so Gatekeeper lets a locally built app run.
