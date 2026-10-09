@@ -43,11 +43,12 @@ terminal or script.
 
 ### One-time Raycast setup (per machine)
 
-Raycast does not auto-load script folders — the directory must be registered:
+Raycast offers no API for registering script folders (its storage is
+proprietary — checked), so this is the one manual step. The installer opens
+Raycast settings for you and prints the rest:
 
-1. Open Raycast Settings → **Extensions** → **Script Commands** → **Add Directories**.
-2. Select `~/.config/raycast/scripts` (create it first if needed — the
-   installer command above does).
+1. Raycast Settings → **Extensions** → **Script Commands** → **Add Directories**.
+2. Select `~/.config/raycast/scripts` (created by the installer command above).
 3. Back in Raycast root search, the commands appear under the **macOS Pets**
    group (e.g. type "Add Crab" or "Throw Ball"). If they don't show, run the
    **Reload Script Commands** action or restart Raycast.

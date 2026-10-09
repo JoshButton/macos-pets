@@ -166,4 +166,11 @@ EOF
     write_script "hide-pets.sh" "Hide Pets" "hide" silent
     write_script "show-pets.sh" "Show Pets" "show" silent
     echo "==> Raycast scripts written to $SCRIPT_DIR"
+    echo
+    echo "    Raycast cannot register script folders itself — one manual step:"
+    echo "    1. This opens Raycast settings at Extensions now."
+    echo "    2. Go to Script Commands → Add Directories and pick:"
+    echo "         $SCRIPT_DIR"
+    echo "    3. Search \"Throw Ball\" to confirm, or run Reload Script Commands."
+    open "raycast://extensions" 2>/dev/null || true
 fi
