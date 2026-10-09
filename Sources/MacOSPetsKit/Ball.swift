@@ -13,6 +13,31 @@ public func DesktopBounds(_ displays: [PetRect]) -> PetRect? {
     return result
 }
 
+/// Layout of the dedicated ball window: a small clickable window that
+/// tracks the ball, so grabs land on us instead of passing through to the
+/// app underneath. A full-screen clickable overlay is not an option — it
+/// would swallow every click on the display.
+public enum BallWindowLayout {
+    /// Extra margin around the ball that still grabs, in points.
+    public static var grabMargin: Double = 14
+
+    /// Window frame (global screen space) covering the ball plus margin.
+    public static func frame(ball: Ball) -> PetRect {
+        let r = ball.radius + grabMargin
+        return PetRect(
+            x: ball.position.x - r,
+            y: ball.position.y - r,
+            width: r * 2,
+            height: r * 2
+        )
+    }
+
+    /// Whether the ball window should be visible and clickable.
+    public static func isVisible(ballState: Ball.State, petsHidden: Bool) -> Bool {
+        !petsHidden && ballState != .carried
+    }
+}
+
 /// Lives in global Cocoa screen space so it can travel across every attached
 /// display. Bouncing is resolved against each display's bounds independently,
 /// which means a ball can leave one monitor, fly over the gap, and land on

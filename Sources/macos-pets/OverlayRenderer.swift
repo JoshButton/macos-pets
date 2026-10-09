@@ -24,7 +24,8 @@ struct OverlayRenderer {
         ball: Ball,
         pets: [Pet],
         displays: [PetRect] = [],
-        pixelScale: Double
+        pixelScale: Double,
+        includeBall: Bool = true
     ) {
         context.clear(view.bounds)
 
@@ -37,8 +38,9 @@ struct OverlayRenderer {
         }
 
         // A carried ball is hidden: the catcher's `with_ball` art shows it in
-        // the mouth, matching upstream hiding the ball canvas on catch.
-        if ball.state != .carried,
+        // the mouth, matching upstream hiding the ball canvas on catch. Pet
+        // overlay windows also skip the ball now that it owns its window.
+        if includeBall, ball.state != .carried,
            displays.isEmpty || displays.contains(where: { $0.intersects(ball.bounds) }) {
             drawBall(in: context, at: toLocal(ball.position), radius: ball.radius)
         }
@@ -46,6 +48,15 @@ struct OverlayRenderer {
         for pet in pets {
             draw(pet, in: context, at: toLocal(pet.position), pixelScale: pixelScale)
         }
+    }
+
+    /// Draws only the ball, for the dedicated ball window. The window frame
+    /// already tracks the ball, so the ball renders centred in the view.
+    func drawBallOnly(into view: NSView, context: CGContext, ball: Ball) {
+        context.clear(view.bounds)
+        guard ball.state != .carried else { return }
+        let center = CGPoint(x: view.bounds.midX, y: view.bounds.midY)
+        drawBall(in: context, at: center, radius: ball.radius)
     }
 
     private func drawBall(in context: CGContext, at local: CGPoint, radius: Double) {

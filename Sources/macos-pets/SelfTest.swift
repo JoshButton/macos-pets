@@ -53,6 +53,7 @@ enum SelfTest {
         testCatchHidesBall()
         testSecondPetStandsDown()
         testFrameDurationsHonored()
+        testBallWindowLayout()
         testCommandRoundTrip()
         testSpritePalettesResolve()
         testGifAssetsResolve()
@@ -308,6 +309,7 @@ enum SelfTest {
         testCatchHidesBall()
         testSecondPetStandsDown()
         testFrameDurationsHonored()
+        testBallWindowLayout()
         testCommandRoundTrip()
         testSpritePalettesResolve()
         testGifAssetsResolve()
@@ -381,6 +383,27 @@ enum SelfTest {
         expect(PetCommand.drainQueue(at: tmp).isEmpty, "drain removes the files")
         expect(PetCommand.drainQueue(at: tmp.appendingPathComponent("missing")).isEmpty, "missing queue dir drains empty")
         try? FileManager.default.removeItem(at: tmp)
+    }
+
+    /// The dedicated ball window tracks the ball (plus grab margin), and only
+    /// shows for a visible, uncarried ball — this is what stops grabs passing
+    /// through to the app underneath.
+    private static func testBallWindowLayout() {
+        var ball = Ball(position: PetPoint(x: 500, y: 300))
+        let frame = BallWindowLayout.frame(ball: ball)
+        expectNear(frame.midX, 500, 0.01, "ball window centres on the ball")
+        expectNear(frame.midY, 300, 0.01, "ball window centres vertically too")
+        expect(
+            frame.width == (ball.radius + BallWindowLayout.grabMargin) * 2,
+            "ball window covers ball plus grab margin (\(Int(frame.width))pt)"
+        )
+        ball.position = PetPoint(x: 510, y: 295)
+        let moved = BallWindowLayout.frame(ball: ball)
+        expect(moved.minX != frame.minX, "window frame follows the ball pixel by pixel")
+        expect(BallWindowLayout.isVisible(ballState: .flying, petsHidden: false), "window shows for a live ball")
+        expect(BallWindowLayout.isVisible(ballState: .resting, petsHidden: false), "window shows for a resting ball")
+        expect(!BallWindowLayout.isVisible(ballState: .carried, petsHidden: false), "window hides with the carried ball")
+        expect(!BallWindowLayout.isVisible(ballState: .flying, petsHidden: true), "window hides with the pets")
     }
 
     /// Frames advance on authored GIF delays, not a flat 8fps. Turtle walk is

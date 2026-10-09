@@ -61,3 +61,37 @@ final class PetOverlayView: NSView {
     /// Transparent views shouldn't paint a background.
     override var isOpaque: Bool { false }
 }
+
+/// The ball's own small window content: clickable (unlike the full-screen
+/// pet overlays), so grabbing the ball consumes the click instead of passing
+/// it through to the app underneath.
+final class BallView: NSView {
+
+    /// Draws the ball. Set by the controller.
+    var render: (() -> Void)?
+
+    /// Called with the click location in global screen coordinates.
+    var onMouseDown: ((PetPoint) -> Void)?
+
+    override func draw(_ dirtyRect: NSRect) {
+        render?()
+    }
+
+    override var isFlipped: Bool { true }
+    override var isOpaque: Bool { false }
+
+    override func mouseDown(with event: NSEvent) {
+        guard let window else { return }
+        // locationInWindow is in the window's base (y-up) coordinates, while
+        // the frame origin is in y-up screen space: they compose directly.
+        let at = event.locationInWindow
+        onMouseDown?(PetPoint(
+            x: window.frame.origin.x + at.x,
+            y: window.frame.origin.y + at.y
+        ))
+    }
+
+    override func resetCursorRects() {
+        addCursorRect(bounds, cursor: .openHand)
+    }
+}

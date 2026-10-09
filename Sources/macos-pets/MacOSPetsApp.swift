@@ -22,10 +22,12 @@ enum MacOSPetsApp {
 final class AppController: NSObject, NSApplicationDelegate {
 
     private var windows: [PetOverlayWindow] = []
+    private var ballWindow: PetOverlayWindow?
     private var layout = DisplayLayout()
     private var world = PetWorld()
     private var ball = Ball(position: .zero)
     private let ballPhysics = BallPhysics()
+    private let renderer = OverlayRenderer()
     private var tickTimer: Timer?
     private var statusItem: NSStatusItem?
 
@@ -108,9 +110,11 @@ final class AppController: NSObject, NSApplicationDelegate {
         petsHidden = hidden
         if hidden {
             for w in windows { w.orderOut(nil) }
+            ballWindow?.orderOut(nil)
         } else {
             rebuildWindowsIfNeeded()
             for w in windows { w.orderFrontRegardless() }
+            updateBallWindow()
         }
     }
 
@@ -172,6 +176,7 @@ final class AppController: NSObject, NSApplicationDelegate {
         for w in windows {
             w.contentView?.setNeedsDisplay(w.contentView!.bounds)
         }
+        updateBallWindow()
     }
 
     private func currentCursor() -> PetPoint? {
@@ -190,8 +195,6 @@ final class AppController: NSObject, NSApplicationDelegate {
 
     // MARK: - Rendering
 
-    private let renderer = OverlayRenderer()
-
     private func render(into view: PetOverlayView) {
         guard let context = NSGraphicsContext.current?.cgContext else { return }
         guard let window = view.window as? PetOverlayWindow else { return }
@@ -207,16 +210,51 @@ final class AppController: NSObject, NSApplicationDelegate {
             ball: ball,
             pets: world.pets,
             displays: layout.rects,
-            pixelScale: pixelScale
+            pixelScale: pixelScale,
+            includeBall: false // the ball owns its window now
         )
+    }
+
+    /// Creates (once) and positions the dedicated clickable ball window.
+    private func updateBallWindow() {
+        let visible = BallWindowLayout.isVisible(ballState: ball.state, petsHidden: petsHidden)
+        guard visible else {
+            ballWindow?.orderOut(nil)
+            return
+        }
+        let frame = BallWindowLayout.frame(ball: ball)
+        let rect = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: frame.height)
+        if let w = ballWindow {
+            w.setFrame(rect, display: false)
+            w.orderFrontRegardless()
+        } else {
+            let w = PetOverlayWindow(displayFrame: rect)
+            w.ignoresMouseEvents = false // clickable: grabs consume the click
+            let view = BallView(frame: CGRect(origin: .zero, size: rect.size))
+            view.render = { [weak self, weak view] in
+                guard let self, let view,
+                      let context = NSGraphicsContext.current?.cgContext else { return }
+                self.renderer.drawBallOnly(into: view, context: context, ball: self.ball)
+            }
+            view.onMouseDown = { [weak self] global in
+                self?.handleMouseDown(at: global)
+            }
+            w.contentView = view
+            w.orderFrontRegardless()
+            ballWindow = w
+        }
+        if let content = ballWindow?.contentView {
+            content.setNeedsDisplay(content.bounds)
+        }
     }
 
 
     // MARK: - Ball interaction
     //
-    // The overlay windows are click-through, so the app watches global mouse
-    // events instead. A grab only starts when the press lands on the ball,
-    // which keeps normal clicking completely unaffected.
+    // The ball owns a small clickable window that tracks it, so a grab lands
+    // on us and never passes through to the app underneath. Pet overlays stay
+    // click-through. Drag continuation still polls global mouse state (the
+    // pointer can leave the small window mid-flick).
 
     private func handleMouseDown(at global: PetPoint) {
         // A carried ball is hidden in a pet's mouth: there is nothing to grab.
