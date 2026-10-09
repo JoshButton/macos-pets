@@ -25,7 +25,7 @@ jobs:
   build:
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Check upstream artwork intact
         run: |
@@ -61,7 +61,7 @@ jobs:
         run: ./install.sh --bundle-only ./dist
 
       - name: Upload bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: macOS-Pets-app
           path: dist/macOS Pets.app
@@ -73,7 +73,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Select Swift toolchain
         run: |
