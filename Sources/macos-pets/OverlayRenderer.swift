@@ -1,0 +1,153 @@
+import AppKit
+import Foundation
+import MacOSPetsKit
+
+/// Draws the pets and the ball for one display.
+///
+/// Kept separate from the controller so the drawing can be exercised against
+/// an offscreen bitmap (see `RenderCheck`) rather than only on screen.
+struct OverlayRenderer {
+
+    /// Test hook: disables the ball's clip so the render check can prove it
+    /// would actually catch the flooding regression.
+    static var disableClipForTest = false
+
+    /// Renders one display's overlay into `context`.
+    ///
+    /// The context is expected to be the flipped coordinate space of a view
+    /// covering `viewSize`, with its origin at the display's global origin.
+    func draw(
+        into view: NSView,
+        context: CGContext,
+        origin: PetPoint,
+        viewSize: PetSize,
+        ball: Ball,
+        pets: [Pet],
+        displays: [PetRect] = [],
+        pixelScale: Double
+    ) {
+        context.clear(view.bounds)
+
+        let width = CGFloat(viewSize.width)
+        let height = CGFloat(viewSize.height)
+
+        // Global (y-up) point -> view-local (y-down) point.
+        func toLocal(_ p: PetPoint) -> CGPoint {
+            CGPoint(x: p.x - origin.x, y: height - (p.y - origin.y))
+        }
+
+        if displays.isEmpty || displays.contains(where: { $0.intersects(ball.bounds) }) {
+            drawBall(in: context, at: toLocal(ball.position), radius: ball.radius)
+        }
+
+        for pet in pets {
+            draw(pet, in: context, at: toLocal(pet.position), pixelScale: pixelScale)
+        }
+    }
+
+    private func drawBall(in context: CGContext, at local: CGPoint, radius: Double) {
+        let r = CGFloat(radius)
+
+        // Contact shadow beneath the ball.
+        context.saveGState()
+        context.setFillColor(NSColor.black.withAlphaComponent(0.22).cgColor)
+        context.fillEllipse(in: CGRect(
+            x: local.x - r * 0.8,
+            y: local.y + r * 0.55,
+            width: r * 1.6,
+            height: r * 0.45
+        ))
+        context.restoreGState()
+
+        // Clip to the circle before drawing the gradient. A radial gradient
+        // with the "draws before/after location" options extends infinitely,
+        // so without this clip the ball floods the entire window with colour.
+        context.saveGState()
+        if !OverlayRenderer.disableClipForTest {
+            context.addEllipse(in: CGRect(x: local.x - r, y: local.y - r, width: r * 2, height: r * 2))
+            context.clip()
+        }
+
+        let colors = [
+            NSColor(calibratedRed: 0.98, green: 0.52, blue: 0.44, alpha: 1).cgColor,
+            NSColor(calibratedRed: 0.74, green: 0.24, blue: 0.21, alpha: 1).cgColor,
+        ] as CFArray
+        if let gradient = CGGradient(
+            colorsSpace: CGColorSpaceCreateDeviceRGB(),
+            colors: colors,
+            locations: [0, 1]
+        ) {
+            context.translateBy(x: local.x, y: local.y)
+            context.scaleBy(x: 1, y: -1) // radial gradients are drawn in user space
+            context.drawRadialGradient(
+                gradient,
+                startCenter: CGPoint(x: -r * 0.35, y: r * 0.35),
+                startRadius: 0,
+                endCenter: .zero,
+                endRadius: r * 1.6,
+                options: [.drawsBeforeStartLocation, .drawsAfterEndLocation]
+            )
+        }
+        context.restoreGState()
+
+        // Outline keeps the ball readable against light backgrounds.
+        context.saveGState()
+        context.setStrokeColor(NSColor(calibratedWhite: 0.1, alpha: 0.5).cgColor)
+        context.setLineWidth(1.5)
+        context.strokeEllipse(in: CGRect(x: local.x - r, y: local.y - r, width: r * 2, height: r * 2))
+        context.restoreGState()
+    }
+
+    private func draw(_ pet: Pet, in context: CGContext, at local: CGPoint, pixelScale: Double) {
+        let frames = pet.species.sprites.frames(for: pet.pose)
+        guard !frames.isEmpty else { return }
+
+        let fps: Double
+        switch pet.pose {
+        case .walk: fps = 8
+        case .idle: fps = 1.6
+        case .sit: fps = 1
+        case .sleep: fps = 0.7
+        }
+        let frameIndex = Int(pet.animationClock * fps) % frames.count
+        var frame = frames[frameIndex]
+        if pet.facing < 0 { frame = flippedHorizontally(frame) }
+
+        let scale = CGFloat(pixelScale)
+        let pixelW = CGFloat(frame.width) * scale
+        let x = local.x - pixelW / 2
+        // Sprites are anchored by their base: the art's bottom row is the feet.
+        let y = local.y
+
+        // Ground shadow.
+        context.saveGState()
+        context.setFillColor(NSColor.black.withAlphaComponent(0.20).cgColor)
+        context.fillEllipse(in: CGRect(
+            x: local.x - pixelW * 0.32,
+            y: y - 2,
+            width: pixelW * 0.64,
+            height: pixelW * 0.14
+        ))
+        context.restoreGState()
+
+        context.saveGState()
+        context.interpolationQuality = .none
+        for rowInArt in 0..<frame.height {
+            let artY = frame.height - 1 - rowInArt
+            for px in 0..<frame.width {
+                let c = frame.color(x: px, y: artY)
+                guard c.a > 0 else { continue }
+                context.setFillColor(CGColor(
+                    red: CGFloat(c.r), green: CGFloat(c.g), blue: CGFloat(c.b), alpha: CGFloat(c.a)
+                ))
+                context.fill(CGRect(
+                    x: x + CGFloat(px) * scale,
+                    y: y + CGFloat(rowInArt) * scale,
+                    width: scale,
+                    height: scale
+                ))
+            }
+        }
+        context.restoreGState()
+    }
+}

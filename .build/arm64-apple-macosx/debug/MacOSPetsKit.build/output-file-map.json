@@ -1,0 +1,47 @@
+{
+  "": {
+    "swift-dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/primary.swiftdeps"
+  },
+  "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/Sources/MacOSPetsKit/Ball.swift": {
+    "dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Ball.d",
+    "object": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Ball.swift.o",
+    "swiftmodule": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Ball~partial.swiftmodule",
+    "swift-dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Ball.swiftdeps",
+    "diagnostics": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Ball.dia"
+  },
+  "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/Sources/MacOSPetsKit/PetCatalogue.swift": {
+    "dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetCatalogue.d",
+    "object": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetCatalogue.swift.o",
+    "swiftmodule": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetCatalogue~partial.swiftmodule",
+    "swift-dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetCatalogue.swiftdeps",
+    "diagnostics": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetCatalogue.dia"
+  },
+  "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/Sources/MacOSPetsKit/PetGeometry.swift": {
+    "dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetGeometry.d",
+    "object": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetGeometry.swift.o",
+    "swiftmodule": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetGeometry~partial.swiftmodule",
+    "swift-dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetGeometry.swiftdeps",
+    "diagnostics": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetGeometry.dia"
+  },
+  "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/Sources/MacOSPetsKit/PetWorld.swift": {
+    "dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetWorld.d",
+    "object": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetWorld.swift.o",
+    "swiftmodule": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetWorld~partial.swiftmodule",
+    "swift-dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetWorld.swiftdeps",
+    "diagnostics": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PetWorld.dia"
+  },
+  "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/Sources/MacOSPetsKit/PixelSprite.swift": {
+    "dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PixelSprite.d",
+    "object": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PixelSprite.swift.o",
+    "swiftmodule": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PixelSprite~partial.swiftmodule",
+    "swift-dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PixelSprite.swiftdeps",
+    "diagnostics": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/PixelSprite.dia"
+  },
+  "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/Sources/MacOSPetsKit/Placeholder.swift": {
+    "dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Placeholder.d",
+    "object": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Placeholder.swift.o",
+    "swiftmodule": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Placeholder~partial.swiftmodule",
+    "swift-dependencies": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Placeholder.swiftdeps",
+    "diagnostics": "/Users/joshuabutton/.config/openchamber/chats/2026-10-09/session-87213834-7fb6-4f00-90ab-a13a4107ccf6/.build/arm64-apple-macosx/debug/MacOSPetsKit.build/Placeholder.dia"
+  }
+}
