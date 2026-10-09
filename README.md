@@ -70,3 +70,8 @@ layer (per-display overlays, clickable ball window, menu).
 Licence: MIT for our code (see `LICENSE`), except `Assets/vscode-pets/`,
 which is upstream artwork under CC BY-ND 4.0 — shipped byte-identical, never
 modified in place.
+
+## How this was built
+
+Almost fully vibecoded using Muse Spark 1.3, just for fun — I was missing my
+vscode-pets since moving to Zed.
