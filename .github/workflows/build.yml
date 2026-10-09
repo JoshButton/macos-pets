@@ -16,8 +16,20 @@ jobs:
           test -f Assets/vscode-pets/LICENSE.upstream
           test "$(find Assets/vscode-pets/media -name '*_8fps.gif' | wc -l)" -ge 360
 
+      - name: Select Swift toolchain
+        # Package.swift needs swift-tools 6.0 (Swift 6+). The runner default
+        # Xcode may be older, so pick the newest installed Xcode and show it.
+        run: |
+          swift --version
+          cand=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+          echo "xcode: $cand"
+          sudo xcode-select -s "$cand"
+          swift --version
+
       - name: Build (debug)
-        run: swift build 2>&1 | tail -3
+        # No pipes here: a masked build failure is exactly how a missing
+        # binary once reached the test step unnoticed.
+        run: swift build
 
       - name: Behavioural checks
         run: ./.build/debug/macos-pets --selftest
