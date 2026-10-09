@@ -3,6 +3,8 @@
 Pixel pets that live on top of your desktop — over any app, across all your
 monitors — plus a ball you can throw between screens for them to chase.
 
+<img width="600" height="390" alt="output-small" src="https://github.com/user-attachments/assets/846af67e-4992-4fbc-b248-e9913619152b" />
+
 Artwork is from [vscode-pets](https://github.com/tonybaloney/vscode-pets),
 used verbatim with attribution (see `Assets/vscode-pets/ATTRIBUTION.md`).
 
@@ -80,5 +82,5 @@ modified in place.
 
 ## How this was built
 
-Almost fully vibecoded using Muse Spark 1.3, just for fun — I was missing my
-vscode-pets since moving to Zed.
+Almost fully vibecoded using Muse Spark 1.3, via OpenCode just for fun. I was missing my
+vscode-pets friends since moving to Zed.
