@@ -6,7 +6,14 @@ monitors — plus a ball you can throw between screens for them to chase.
 Artwork is from [vscode-pets](https://github.com/tonybaloney/vscode-pets),
 used verbatim with attribution (see `Assets/vscode-pets/ATTRIBUTION.md`).
 
-## Install
+## Download
+
+Grab the latest `macOS-Pets.zip` from the
+[Releases page](https://github.com/JoshButton/macos-pets/releases), unzip it,
+and move **macOS Pets** to `/Applications`. (Every `v*` tag builds and
+attaches the binary automatically.)
+
+## Install from source
 
 Requires macOS 13+ and a Swift toolchain (`xcode-select --install` is enough).
 
