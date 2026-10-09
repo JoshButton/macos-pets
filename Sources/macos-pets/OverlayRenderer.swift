@@ -147,13 +147,7 @@ struct OverlayRenderer {
         let frames = pet.species.sprites.frames(for: pet.pose)
         guard !frames.isEmpty else { return }
 
-        let fps: Double
-        switch pet.pose {
-        case .walk: fps = 8
-        case .idle: fps = 1.6
-        case .sit: fps = 1
-        case .sleep: fps = 0.7
-        }
+        let fps = pet.pose.fps
         let frameIndex = Int(pet.animationClock * fps) % frames.count
         var frame = frames[frameIndex]
         if pet.facing < 0 { frame = flippedHorizontally(frame) }

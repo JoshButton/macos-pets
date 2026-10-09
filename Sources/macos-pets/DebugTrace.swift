@@ -35,7 +35,7 @@ enum DebugTrace {
         GifDump.dump(out: out, speciesID: speciesID, poseName: poseName)
     }
 
-    static func traceBall() {
+        static func traceBall() {
         var ball = Ball(position: PetPoint(x: 500, y: 400))
         let physics = BallPhysics()
         let displays = [PetRect(x: 0, y: 0, width: 1000, height: 800)]

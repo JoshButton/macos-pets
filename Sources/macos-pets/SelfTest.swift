@@ -35,6 +35,13 @@ enum SelfTest {
         testPetsTransitionDisplays()
         testPetsStayInBounds()
         testPetsCrossBetweenDisplaysOverTime()
+        testPetRetargetsFromSeamDeadZone()
+        testPetTurnsAtOuterWall()
+        testPetFacesMovementDirection()
+        testChaseUsesRunPose()
+        testCarryArtResolves()
+        testTotoroClimbsOuterWall()
+        testDuckDoesNotClimb()
         testSpritePalettesResolve()
         testGifAssetsResolve()
 
@@ -277,8 +284,183 @@ enum SelfTest {
         testPetsTransitionDisplays()
         testPetsStayInBounds()
         testPetsCrossBetweenDisplaysOverTime()
+        testPetRetargetsFromSeamDeadZone()
+        testPetTurnsAtOuterWall()
+        testPetFacesMovementDirection()
+        testChaseUsesRunPose()
+        testCarryArtResolves()
+        testTotoroClimbsOuterWall()
+        testDuckDoesNotClimb()
         testSpritePalettesResolve()
         testGifAssetsResolve()
+    }
+
+    /// Chasing pets use the run gait, and fetching pets the carry art.
+    private static func testChaseUsesRunPose() {
+        let species = PetCatalogue.species(id: "dog-black")!
+        var pet = Pet(species: species, position: PetPoint(x: 100, y: 6), displayIndex: 0)
+        pet.activity = .chasing
+        expect(pet.pose == .run, "chasing uses the run gait")
+        pet.activity = .fetching
+        expect(pet.pose == .carry, "fetching uses the carry art")
+        pet.activity = .walking(to: PetPoint(x: 900, y: 6))
+        expect(pet.pose == .run, "long walks use the run gait")
+        pet.activity = .walking(to: PetPoint(x: 120, y: 6))
+        expect(pet.pose == .walk, "short walks use the walk gait")
+    }
+
+    /// Every species resolves carry (with_ball) art, directly or via fallback.
+    private static func testCarryArtResolves() {
+        var missing: [String] = []
+        for species in PetCatalogue.all {
+            if species.gif?.relativePath(for: .carry) == nil {
+                missing.append(species.id)
+            }
+        }
+        expect(missing.isEmpty, "all species resolve carry art: \(missing)")
+    }
+
+    /// A climbing species blocked at an outer desktop wall scales it: rises,
+    /// hangs, descends, and lands back on the floor.
+    private static func testTotoroClimbsOuterWall() {
+        let displays = [PetRect(x: 0, y: 0, width: 1000, height: 800)]
+        var world = PetWorld(displays: displays, seed: 21)
+        world.climbChance = 1.0 // force the climb
+        let species = PetCatalogue.species(id: "totoro")!
+        expect(species.canClimb, "totoro is a climbing species")
+        world.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 950, y: 6),
+            displayIndex: 0, facing: 1
+        ))
+        world.pets[0].activity = .walking(to: PetPoint(x: 2000, y: 6))
+
+        var sawClimb = false
+        var sawHang = false
+        var maxY = 6.0
+        for _ in 0..<3600 {
+            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+            let p = world.pets[0]
+            maxY = max(maxY, p.position.y)
+            if p.isAirborne { sawClimb = true }
+            if case .hanging = p.activity { sawHang = true }
+        }
+        expect(sawClimb, "totoro leaves the floor to climb the outer wall")
+        expect(sawHang, "totoro hangs at the top before descending")
+        expect(maxY > 100, "totoro gains real height (maxY=\(Int(maxY)))")
+        expect(world.pets[0].displayIndex == 0, "totoro stays on its display while climbing")
+    }
+
+    /// Non-climbers turn around at outer walls instead of climbing.
+    private static func testDuckDoesNotClimb() {
+        let displays = [PetRect(x: 0, y: 0, width: 1000, height: 800)]
+        var world = PetWorld(displays: displays, seed: 21)
+        world.climbChance = 1.0
+        let species = PetCatalogue.species(id: "duck")!
+        expect(!species.canClimb, "duck is not a climbing species")
+        world.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 950, y: 6),
+            displayIndex: 0, facing: 1
+        ))
+        world.pets[0].activity = .walking(to: PetPoint(x: 2000, y: 6))
+
+        var leftFloor = false
+        for _ in 0..<1800 {
+            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+            if world.pets[0].position.y > 20 { leftFloor = true; break }
+        }
+        expect(!leftFloor, "duck never leaves the floor at an outer wall")
+    }
+
+    /// A pet ordered into the clamp dead-zone at an internal seam must retarget
+    /// rather than grind there forever or ping-pong across the seam: the goal
+    /// is unreachable from both sides, so crossing would just oscillate.
+    private static func testPetRetargetsFromSeamDeadZone() {
+        let displays = lShapedDisplays()
+        var world = PetWorld(displays: displays, seed: 5)
+        let species = PetCatalogue.species(id: "duck")!
+        world.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 1470, y: 6),
+            displayIndex: 0, facing: 1
+        ))
+        world.pets[0].activity = .walking(to: PetPoint(x: 1500, y: 6))
+
+        for _ in 0..<120 {
+            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+        }
+        // It must have given up the unreachable goal (and stayed put rather
+        // than teleporting across the desktop).
+        if case .walking(let target) = world.pets[0].activity {
+            expect(
+                abs(target.x - 1500) > 0.01 || world.pets[0].displayIndex != 0,
+                "pet abandons the unreachable seam goal instead of grinding it"
+            )
+        }
+        expect(world.pets[0].displayIndex == 0, "pet does not teleport across the desktop from a dead-zone goal")
+        let display = displays[0]
+        expect(
+            world.pets[0].position.x >= display.minX && world.pets[0].position.x <= display.maxX,
+            "pet remains inside its display"
+        )
+    }
+
+    /// A pet blocked at the *outer* desktop wall turns around instead of
+    /// grinding: it must not change displays and must keep varying activity.
+    private static func testPetTurnsAtOuterWall() {
+        let displays = lShapedDisplays()
+        var world = PetWorld(displays: displays, seed: 11)
+        let species = PetCatalogue.species(id: "duck")!
+        world.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 5340, y: 62),
+            displayIndex: 1, facing: 1
+        ))
+        world.pets[0].activity = .walking(to: PetPoint(x: 6000, y: 62))
+
+        for _ in 0..<600 {
+            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+        }
+        expect(world.pets[0].displayIndex == 1, "pet stays on its display at the outer wall")
+        let display = displays[1]
+        expect(
+            world.pets[0].position.x >= display.minX && world.pets[0].position.x <= display.maxX,
+            "pet remains inside the display after hitting the outer wall"
+        )
+    }
+
+    /// While walking toward an edge on another display, the pet faces its
+    /// direction of travel every tick — no moonwalking.
+    private static func testPetFacesMovementDirection() {
+        let displays = [
+            PetRect(x: 0, y: 0, width: 1000, height: 800),
+            PetRect(x: 1000, y: 0, width: 1000, height: 800),
+        ]
+        var world = PetWorld(displays: displays, seed: 3)
+        let species = PetCatalogue.species(id: "duck")!
+        // Facing right but ordered left across the seam.
+        world.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 1500, y: 6),
+            displayIndex: 1, facing: 1
+        ))
+        world.pets[0].activity = .walking(to: PetPoint(x: 200, y: 6))
+
+        var mismatch = 0
+        var steps = 0
+        for _ in 0..<900 {
+            let before = world.pets[0].position.x
+            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+            let moved = world.pets[0].position.x - before
+            if abs(moved) > 0.001 {
+                steps += 1
+                let shouldFace = moved > 0 ? 1 : -1
+                if world.pets[0].facing != shouldFace { mismatch += 1 }
+            }
+        }
+        expect(steps > 10, "pet actually moved during the facing check (\(steps) steps)")
+        expect(mismatch == 0, "pet always faces its direction of travel (\(mismatch)/\(steps) moonwalk steps)")
     }
 
     /// Every GIF-backed species must resolve its files on disk and decode at
