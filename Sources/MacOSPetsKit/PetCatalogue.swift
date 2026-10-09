@@ -217,6 +217,74 @@ public enum PetCatalogue {
             speciesDir: "totoro", variant: "gray",
             files: [.idle: "gray_idle_8fps.gif", .walk: "gray_walk_8fps.gif", .run: "gray_run_8fps.gif", .carry: "gray_with_ball_8fps.gif", .sit: "gray_idle_8fps.gif", .sleep: "gray_lie_8fps.gif", .climb: "gray_wallclimb_8fps.gif", .hang: "gray_wallgrab_8fps.gif", .land: "gray_land_8fps.gif"],
             gifWidth: 100, gifHeight: 90), canClimb: true),
+        PetSpecies(id: "cockatiel", name: "Cockatiel", energy: 0.5, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "cockatiel", variant: "brown",
+            files: [.idle: "brown_idle_8fps.gif", .walk: "brown_walk_8fps.gif", .run: "brown_run_8fps.gif", .carry: "brown_with_ball_8fps.gif", .sit: "brown_idle_8fps.gif", .sleep: "brown_idle_8fps.gif"],
+            gifWidth: 90, gifHeight: 70)),
+        PetSpecies(id: "deno", name: "Deno", energy: 0.4, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "deno", variant: "green",
+            files: [.idle: "green_idle_8fps.gif", .walk: "green_walk_8fps.gif", .run: "green_run_8fps.gif", .carry: "green_with_ball_8fps.gif", .sit: "green_idle_8fps.gif", .sleep: "green_idle_8fps.gif"],
+            gifWidth: 34, gifHeight: 30)),
+        PetSpecies(id: "horse", name: "Horse", energy: 0.7, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "horse", variant: "brown",
+            files: [.idle: "brown_idle_8fps.gif", .walk: "brown_walk_8fps.gif", .run: "brown_run_8fps.gif", .carry: "brown_with_ball_8fps.gif", .sit: "brown_stand_8fps.gif", .sleep: "brown_idle_8fps.gif"],
+            gifWidth: 80, gifHeight: 64)),
+        PetSpecies(id: "mod", name: "Mod", energy: 0.5, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "mod", variant: "purple",
+            files: [.idle: "purple_idle_8fps.gif", .walk: "purple_walk_8fps.gif", .run: "purple_run_8fps.gif", .carry: "purple_with_ball_8fps.gif", .sit: "purple_idle_8fps.gif", .sleep: "purple_idle_8fps.gif"],
+            gifWidth: 90, gifHeight: 90)),
+        PetSpecies(id: "monkey", name: "Monkey", energy: 0.75, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "monkey", variant: "gray",
+            files: [.idle: "gray_idle_8fps.gif", .walk: "gray_walk_8fps.gif", .run: "gray_run_8fps.gif", .carry: "gray_with_ball_8fps.gif", .sit: "gray_idle_8fps.gif", .sleep: "gray_idle_8fps.gif"],
+            gifWidth: 150, gifHeight: 150)),
+        PetSpecies(id: "morph", name: "Morph", energy: 0.5, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "morph", variant: "purple",
+            files: [.idle: "purple_idle_8fps.gif", .walk: "purple_walk_8fps.gif", .run: "purple_run_8fps.gif", .carry: "purple_with_ball_8fps.gif", .sit: "purple_idle_8fps.gif", .sleep: "purple_idle_8fps.gif"],
+            gifWidth: 100, gifHeight: 100)),
+        PetSpecies(id: "raccoon", name: "Raccoon", energy: 0.6, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "raccoon", variant: "gray_jimothy",
+            files: [.idle: "gray_jimothy_idle_8fps.gif", .walk: "gray_jimothy_walk_8fps.gif", .run: "gray_jimothy_run_8fps.gif", .carry: "gray_jimothy_with_ball_8fps.gif", .sit: "gray_jimothy_idle_8fps.gif", .sleep: "gray_jimothy_lie_8fps.gif"],
+            gifWidth: 120, gifHeight: 80)),
+        PetSpecies(id: "rat", name: "Rat", energy: 0.65, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "rat", variant: "gray",
+            files: [.idle: "gray_idle_8fps.gif", .walk: "gray_walk_8fps.gif", .run: "gray_run_8fps.gif", .carry: "gray_with_ball_8fps.gif", .sit: "gray_idle_8fps.gif", .sleep: "gray_idle_8fps.gif"],
+            gifWidth: 135, gifHeight: 95)),
+        PetSpecies(id: "rocky", name: "Rocky", energy: 0.4, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "rocky", variant: "gray",
+            files: [.idle: "gray_idle_8fps.gif", .walk: "gray_walk_8fps.gif", .run: "gray_run_8fps.gif", .sit: "gray_idle_8fps.gif", .sleep: "gray_idle_8fps.gif"],
+            gifWidth: 160, gifHeight: 120)),
+        PetSpecies(id: "skeleton", name: "Skeleton", energy: 0.5, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "skeleton", variant: "white",
+            files: [.idle: "white_idle_8fps.gif", .walk: "white_walk_8fps.gif", .run: "white_run_8fps.gif", .carry: "white_with_ball_8fps.gif", .sit: "white_stand_8fps.gif", .sleep: "white_idle_8fps.gif"],
+            gifWidth: 68, gifHeight: 64)),
+        PetSpecies(id: "zappy", name: "Zappy", energy: 0.55, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "zappy", variant: "yellow",
+            files: [.idle: "yellow_idle_8fps.gif", .walk: "yellow_walk_8fps.gif", .run: "yellow_run_8fps.gif", .carry: "yellow_with_ball_8fps.gif", .sit: "yellow_idle_8fps.gif", .sleep: "yellow_idle_8fps.gif"],
+            gifWidth: 100, gifHeight: 80)),
+        PetSpecies(id: "chicken-gray", name: "Chicken (Gray)", energy: 0.55, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "chicken", variant: "gray",
+            files: [.idle: "gray_idle_8fps.gif", .walk: "gray_walk_8fps.gif", .run: "gray_run_8fps.gif", .carry: "gray_with_ball_8fps.gif", .sit: "gray_idle_8fps.gif", .sleep: "gray_idle_8fps.gif"],
+            gifWidth: 111, gifHeight: 101)),
+        PetSpecies(id: "chicken-white", name: "Chicken (White)", energy: 0.55, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "chicken", variant: "white",
+            files: [.idle: "white_idle_8fps.gif", .walk: "white_walk_8fps.gif", .run: "white_run_8fps.gif", .carry: "white_with_ball_8fps.gif", .sit: "white_idle_8fps.gif", .sleep: "white_idle_8fps.gif"],
+            gifWidth: 111, gifHeight: 101)),
+        PetSpecies(id: "dog-red", name: "Dog (Red)", energy: 0.8, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "dog", variant: "red",
+            files: [.idle: "red_idle_8fps.gif", .walk: "red_walk_8fps.gif", .run: "red_run_8fps.gif", .carry: "red_with_ball_8fps.gif", .sit: "red_idle_8fps.gif", .sleep: "red_lie_8fps.gif"],
+            gifWidth: 120, gifHeight: 96)),
+        PetSpecies(id: "dog-white", name: "Dog (White)", energy: 0.8, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "dog", variant: "white",
+            files: [.idle: "white_idle_8fps.gif", .walk: "white_walk_8fps.gif", .run: "white_run_8fps.gif", .carry: "white_with_ball_8fps.gif", .sit: "white_idle_8fps.gif", .sleep: "white_lie_8fps.gif"],
+            gifWidth: 115, gifHeight: 90)),
+        PetSpecies(id: "fox-white", name: "Fox (White)", energy: 0.6, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "fox", variant: "white",
+            files: [.idle: "white_idle_8fps.gif", .walk: "white_walk_8fps.gif", .run: "white_run_8fps.gif", .carry: "white_with_ball_8fps.gif", .sit: "white_idle_8fps.gif", .sleep: "white_lie_8fps.gif"],
+            gifWidth: 92, gifHeight: 75)),
+        PetSpecies(id: "turtle-orange", name: "Turtle (Orange)", energy: 0.25, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "turtle", variant: "orange",
+            files: [.idle: "orange_idle_8fps.gif", .walk: "orange_walk_8fps.gif", .run: "orange_run_8fps.gif", .carry: "orange_with_ball_8fps.gif", .sit: "orange_idle_8fps.gif", .sleep: "orange_lie_8fps.gif"],
+            gifWidth: 115, gifHeight: 90)),
     ]
 
     /// Original hand-drawn sprites, kept as offline fallback.

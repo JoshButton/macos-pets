@@ -120,10 +120,10 @@ struct OverlayRenderer {
         if let gif = pet.species.gif,
            let got = GifFrameStore.shared.frame(for: pet.species, pose: pet.pose, clock: pet.animationClock) {
             let targetH = CGFloat(gif.targetHeight)
-            let imgSize = got.size
-            guard imgSize.height > 0 else { return }
-            let s = targetH / imgSize.height
-            let drawW = imgSize.width * s
+            let imgW = CGFloat(got.image.width), imgH = CGFloat(got.image.height)
+            guard imgH > 0 else { return }
+            let s = targetH / imgH
+            let drawW = imgW * s
             let drawH = targetH
             // Feet sit on the floor. The view is y-down, so the sprite extends
             // *upward* (toward smaller y) from the floor point; the

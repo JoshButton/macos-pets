@@ -72,13 +72,15 @@ final class GifFrameStore {
         return nil
     }
 
-    /// Frames for a species + pose at the current animation clock.
-    func frame(for species: PetSpecies, pose: PetPose, clock: Double) -> (image: CGImage, bottomInset: CGFloat, size: CGSize)? {
+    /// Frames for a species + pose at the current animation clock. Size comes
+    /// from the frame itself: some GIFs (deno) vary slightly frame to frame,
+    /// and scaling each frame independently avoids size popping.
+    func frame(for species: PetSpecies, pose: PetPose, clock: Double) -> (image: CGImage, bottomInset: CGFloat)? {
         guard let gif = species.gif, let rel = gif.relativePath(for: pose) else { return nil }
         guard let entry = entry(forRelativePath: rel) else { return nil }
         guard !entry.frames.isEmpty else { return nil }
         let idx = entry.frameIndex(at: clock)
-        return (entry.frames[idx], entry.bottomInsets[idx], entry.size)
+        return (entry.frames[idx], entry.bottomInsets[idx])
     }
 
     func entry(forRelativePath rel: String) -> Entry? {
