@@ -109,10 +109,12 @@ struct OverlayRenderer {
             let s = targetH / imgSize.height
             let drawW = imgSize.width * s
             let drawH = targetH
-            // Feet sit on the floor: lift by the transparent bottom inset.
+            // Feet sit on the floor. The view is y-down, so the sprite extends
+            // *upward* (toward smaller y) from the floor point; the
+            // transparent bottom inset lifts the rect so the feet land on it.
             let insetPts = got.bottomInset * s
-            let x = local.x - drawW / 2
-            let y = local.y + insetPts
+            let rectBottom = local.y + insetPts
+            let rectCenterY = rectBottom - drawH / 2
 
             // Ground shadow, width-aware so wide sprites read correctly.
             context.saveGState()
@@ -130,7 +132,7 @@ struct OverlayRenderer {
             // Center-origin draw: vertical flip corrects CGImage (y-up) for
             // the flipped view (y-down); horizontal flip is facing, applied
             // as a display transform only — the asset bytes are untouched.
-            context.translateBy(x: local.x, y: y + drawH / 2)
+            context.translateBy(x: local.x, y: rectCenterY)
             context.scaleBy(x: pet.facing < 0 ? -1 : 1, y: -1)
             context.draw(got.image, in: CGRect(x: -drawW / 2, y: -drawH / 2, width: drawW, height: drawH))
             context.restoreGState()
@@ -158,16 +160,17 @@ struct OverlayRenderer {
 
         let scale = CGFloat(pixelScale)
         let pixelW = CGFloat(frame.width) * scale
+        let pixelH = CGFloat(frame.height) * scale
         let x = local.x - pixelW / 2
-        // Sprites are anchored by their base: the art's bottom row is the feet.
-        let y = local.y
+        // Feet at the floor point; the sprite extends upward (smaller y).
+        let top = local.y - pixelH
 
         // Ground shadow.
         context.saveGState()
         context.setFillColor(NSColor.black.withAlphaComponent(0.20).cgColor)
         context.fillEllipse(in: CGRect(
             x: local.x - pixelW * 0.32,
-            y: y - 2,
+            y: local.y - 2,
             width: pixelW * 0.64,
             height: pixelW * 0.14
         ))
@@ -185,7 +188,7 @@ struct OverlayRenderer {
                 ))
                 context.fill(CGRect(
                     x: x + CGFloat(px) * scale,
-                    y: y + CGFloat(rowInArt) * scale,
+                    y: top + CGFloat(rowInArt) * scale,
                     width: scale,
                     height: scale
                 ))
