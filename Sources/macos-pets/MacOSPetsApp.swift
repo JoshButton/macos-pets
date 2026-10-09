@@ -45,7 +45,7 @@ final class AppController: NSObject, NSApplicationDelegate {
         layout = DisplayLayout.current()
         world = PetWorld(displays: layout.rects)
 
-        for (i, id) in ["cat", "dog", "duck"].enumerated() {
+        for (i, id) in ["dog-black", "crab", "duck"].enumerated() {
             if let species = PetCatalogue.species(id: id) {
                 world.spawn(species, on: i % max(layout.count, 1))
             }

@@ -58,16 +58,18 @@ Other flags:
 
 ## Artwork
 
-The sprites are original, authored here as ASCII art in `PetCatalogue.swift`
-against a shared palette. They were not taken from vscode-pets: that project's
-*code* is MIT, but the individual sprite artwork is licensed
-**CC BY-ND 4.0** (see `media/<species>/license.txt` in that repo), which forbids
-distributing modified copies. That rules out redrawing or recolouring their
-assets, so this project ships its own.
+The pets are verbatim, unmodified GIF sprites from
+[tonybaloney/vscode-pets](https://github.com/tonybaloney/vscode-pets)
+(`Assets/vscode-pets/media/`, 369 files), used with attribution — see
+`Assets/vscode-pets/ATTRIBUTION.md`.
 
-If you want the real vscode-pets sprites, they can be loaded verbatim under
-their own licence with attribution — that's a licensing decision to make
-deliberately, not a copy-paste.
+Licence notes: the upstream *code* is MIT, but the sprite artwork is
+**CC BY-ND 4.0**, which permits verbatim reproduction with attribution but not
+modified copies. So the files ship byte-identical: no recolouring, no redrawn
+pixels, no mirrored pixel buffers. Left/right facing is a display-time canvas
+transform only, and per-species `license.txt` files are kept intact. The
+original hand-drawn ASCII sprites remain in `PetCatalogue.proceduralAll` as an
+offline fallback.
 
 ## Known limits
 

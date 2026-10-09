@@ -115,7 +115,7 @@ enum RenderCheck {
         let renderer = OverlayRenderer()
         let ball = Ball(position: PetPoint(x: Double(width) / 2, y: Double(height) / 2))
         let pet = Pet(
-            species: PetCatalogue.species(id: "cat")!,
+            species: PetCatalogue.species(id: "dog-black")!,
             position: PetPoint(x: 200, y: 40),
             displayIndex: 0
         )

@@ -36,6 +36,46 @@ public struct PetSpriteSet: Sendable {
     public var pixelHeight: Int { idle.first?.height ?? 1 }
 }
 
+/// Reference to verbatim upstream GIF artwork (tonybaloney/vscode-pets).
+///
+/// The files are shipped unmodified under CC BY-ND 4.0 with attribution (see
+/// Assets/vscode-pets/ATTRIBUTION.md). Each pose maps to one animated GIF
+/// file; `gifWidth`/`gifHeight` are the logical pixel dimensions of the art,
+/// used to derive on-screen size without opening the files.
+public struct GifAssetReference: Sendable, Equatable {
+    /// Upstream media directory, e.g. "dog".
+    public let speciesDir: String
+    /// Colour variant, e.g. "black".
+    public let variant: String
+    /// Pose -> GIF filename (not path), e.g. [.idle: "black_idle_8fps.gif"].
+    public let files: [PetPose: String]
+    public let gifWidth: Int
+    public let gifHeight: Int
+    /// Desired on-screen height in points. Width follows aspect ratio.
+    public let targetHeight: Double
+
+    public init(speciesDir: String, variant: String, files: [PetPose: String], gifWidth: Int, gifHeight: Int, targetHeight: Double = 64) {
+        self.speciesDir = speciesDir
+        self.variant = variant
+        self.files = files
+        self.gifWidth = gifWidth
+        self.gifHeight = gifHeight
+        self.targetHeight = targetHeight
+    }
+
+    /// On-screen width preserving the GIF aspect ratio.
+    public var displayWidth: Double {
+        guard gifHeight > 0 else { return targetHeight }
+        return targetHeight * Double(gifWidth) / Double(gifHeight)
+    }
+
+    /// Relative path of a pose's GIF inside Assets/vscode-pets.
+    public func relativePath(for pose: PetPose) -> String? {
+        guard let file = files[pose] else { return nil }
+        return "media/\(speciesDir)/\(file)"
+    }
+}
+
 /// A pet species the user can spawn.
 public struct PetSpecies: Identifiable, Sendable {
     public let id: String
@@ -43,12 +83,24 @@ public struct PetSpecies: Identifiable, Sendable {
     /// Roughly how energetic this species is; higher walks further.
     public let energy: Double
     public let sprites: PetSpriteSet
+    /// When non-nil, the renderer draws these verbatim GIFs instead of the
+    /// procedural pixels. Facing is applied as a display-time transform only,
+    /// never as modified pixel data, to respect the ND licence.
+    public let gif: GifAssetReference?
 
-    public init(id: String, name: String, energy: Double, sprites: PetSpriteSet) {
+    public init(id: String, name: String, energy: Double, sprites: PetSpriteSet, gif: GifAssetReference? = nil) {
         self.id = id
         self.name = name
         self.energy = energy
         self.sprites = sprites
+        self.gif = gif
+    }
+
+    /// On-screen footprint width in points, used for edge clamping so wide
+    /// sprites (e.g. crab at 150x90) don't overhang monitor edges.
+    public var footprintWidth: Double {
+        if let gif { return gif.displayWidth }
+        return Double(sprites.pixelWidth) * 3.0
     }
 }
 
@@ -56,16 +108,80 @@ public struct PetSpecies: Identifiable, Sendable {
 
 public enum PetCatalogue {
 
-    public static let all: [PetSpecies] = [
+    /// Placeholder for GIF-backed species: the renderer uses `gif` and never
+    /// touches these pixels.
+    public static let emptySprites = PetSpriteSet(idle: [], walk: [], sit: [], sleep: [])
+
+    /// The default roster: verbatim upstream GIF artwork with attribution.
+    /// Procedural originals remain available via `proceduralAll` as fallback.
+    public static let all: [PetSpecies] = gifBackedAll
+
+    public static let gifBackedAll: [PetSpecies] = [
+        PetSpecies(id: "dog-black", name: "Dog", energy: 0.8, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "dog", variant: "black",
+            files: [.idle: "black_idle_8fps.gif", .walk: "black_walk_8fps.gif", .sit: "black_idle_8fps.gif", .sleep: "black_lie_8fps.gif"],
+            gifWidth: 120, gifHeight: 90)),
+        PetSpecies(id: "dog-brown", name: "Dog (Brown)", energy: 0.8, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "dog", variant: "brown",
+            files: [.idle: "brown_idle_8fps.gif", .walk: "brown_walk_8fps.gif", .sit: "brown_idle_8fps.gif", .sleep: "brown_lie_8fps.gif"],
+            gifWidth: 120, gifHeight: 90)),
+        PetSpecies(id: "dog-akita", name: "Akita", energy: 0.85, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "dog", variant: "akita",
+            files: [.idle: "akita_idle_8fps.gif", .walk: "akita_walk_8fps.gif", .sit: "akita_idle_8fps.gif", .sleep: "akita_lie_8fps.gif"],
+            gifWidth: 120, gifHeight: 90)),
+        PetSpecies(id: "crab", name: "Crab", energy: 0.65, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "crab", variant: "red",
+            files: [.idle: "red_idle_8fps.gif", .walk: "red_walk_8fps.gif", .sit: "red_idle_8fps.gif", .sleep: "red_idle_8fps.gif"],
+            gifWidth: 150, gifHeight: 90)),
+        PetSpecies(id: "turtle", name: "Turtle", energy: 0.25, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "turtle", variant: "green",
+            files: [.idle: "green_idle_8fps.gif", .walk: "green_walk_8fps.gif", .sit: "green_idle_8fps.gif", .sleep: "green_lie_8fps.gif"],
+            gifWidth: 115, gifHeight: 90)),
+        PetSpecies(id: "snake", name: "Snake", energy: 0.3, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "snake", variant: "green",
+            files: [.idle: "green_idle_8fps.gif", .walk: "green_walk_8fps.gif", .sit: "green_idle_8fps.gif", .sleep: "green_idle_8fps.gif"],
+            gifWidth: 90, gifHeight: 90)),
+        PetSpecies(id: "duck", name: "Duck", energy: 0.4, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "rubber-duck", variant: "yellow",
+            files: [.idle: "yellow_idle_8fps.gif", .walk: "yellow_walk_8fps.gif", .sit: "yellow_idle_8fps.gif", .sleep: "yellow_idle_8fps.gif"],
+            gifWidth: 90, gifHeight: 80)),
+        PetSpecies(id: "clippy", name: "Clippy", energy: 0.45, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "clippy", variant: "yellow",
+            files: [.idle: "yellow_idle_8fps.gif", .walk: "yellow_walk_8fps.gif", .sit: "yellow_idle_8fps.gif", .sleep: "yellow_idle_8fps.gif"],
+            gifWidth: 112, gifHeight: 142)),
+        PetSpecies(id: "fox", name: "Fox", energy: 0.6, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "fox", variant: "red",
+            files: [.idle: "red_idle_8fps.gif", .walk: "red_walk_8fps.gif", .sit: "red_idle_8fps.gif", .sleep: "red_lie_8fps.gif"],
+            gifWidth: 92, gifHeight: 75)),
+        PetSpecies(id: "panda", name: "Panda", energy: 0.5, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "panda", variant: "black",
+            files: [.idle: "black_idle_8fps.gif", .walk: "black_walk_8fps.gif", .sit: "black_idle_8fps.gif", .sleep: "black_lie_8fps.gif"],
+            gifWidth: 96, gifHeight: 96)),
+        PetSpecies(id: "chicken", name: "Chicken", energy: 0.55, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "chicken", variant: "brown",
+            files: [.idle: "brown_idle_8fps.gif", .walk: "brown_walk_8fps.gif", .sit: "brown_idle_8fps.gif", .sleep: "brown_idle_8fps.gif"],
+            gifWidth: 90, gifHeight: 80)),
+        PetSpecies(id: "snail", name: "Snail", energy: 0.2, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "snail", variant: "brown",
+            files: [.idle: "brown_idle_8fps.gif", .walk: "brown_walk_8fps.gif", .sit: "brown_idle_8fps.gif", .sleep: "brown_idle_8fps.gif"],
+            gifWidth: 90, gifHeight: 80)),
+        PetSpecies(id: "totoro", name: "Totoro", energy: 0.5, sprites: emptySprites, gif: GifAssetReference(
+            speciesDir: "totoro", variant: "gray",
+            files: [.idle: "gray_idle_8fps.gif", .walk: "gray_walk_8fps.gif", .sit: "gray_idle_8fps.gif", .sleep: "gray_lie_8fps.gif"],
+            gifWidth: 100, gifHeight: 90)),
+    ]
+
+    /// Original hand-drawn sprites, kept as offline fallback.
+    public static let proceduralAll: [PetSpecies] = [
         cat(), dog(), duck(), snake(), crab(), penguin(), turtle(), frog(), turtle2(), robot(),
     ]
 
     public static func species(id: String) -> PetSpecies? {
-        all.first { $0.id == id }
+        all.first { $0.id == id } ?? proceduralAll.first { $0.id == id }
     }
 
     public static func randomName() -> String {
-        all.randomElement()?.name ?? "Cat"
+        all.randomElement()?.name ?? "Dog"
     }
 
     // Cat ----------------------------------------------------------------

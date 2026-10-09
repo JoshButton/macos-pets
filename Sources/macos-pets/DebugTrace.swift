@@ -31,6 +31,10 @@ enum DebugTrace {
         }
     }
 
+    static func dumpGif(out: String, speciesID: String, poseName: String) {
+        GifDump.dump(out: out, speciesID: speciesID, poseName: poseName)
+    }
+
     static func traceBall() {
         var ball = Ball(position: PetPoint(x: 500, y: 400))
         let physics = BallPhysics()

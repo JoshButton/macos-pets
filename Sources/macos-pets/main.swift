@@ -27,6 +27,16 @@ if args.contains("--trace-pets") {
     exit(0)
 }
 
+if args.contains("--dump-gif") {
+    // --dump-gif <out.png> <species-id> <pose>
+    let i = args.firstIndex(of: "--dump-gif")!
+    let out = args.count > i+1 ? args[i+1] : "/tmp/gif.png"
+    let sid = args.count > i+2 ? args[i+2] : "dog-black"
+    let poseName = args.count > i+3 ? args[i+3] : "idle"
+    DebugTrace.dumpGif(out: out, speciesID: sid, poseName: poseName)
+    exit(0)
+}
+
 if args.contains("--render-sheet") {
     if let data = SpriteSheetRenderer.render() {
         let path = args.last ?? "sprite-sheet.png"

@@ -20,6 +20,14 @@ mkdir -p "$DEST/Contents/MacOS" "$DEST/Contents/Resources"
 
 cp .build/release/macos-pets "$DEST/Contents/MacOS/macos-pets"
 
+# Verbatim upstream GIF artwork + attribution (CC BY-ND 4.0, see
+# Assets/vscode-pets/ATTRIBUTION.md). Copied unmodified.
+echo "==> Bundling artwork"
+rm -rf "$DEST/Contents/Resources/vscode-pets"
+mkdir -p "$DEST/Contents/Resources/vscode-pets"
+cp -R Assets/vscode-pets/media "$DEST/Contents/Resources/vscode-pets/media"
+cp Assets/vscode-pets/ATTRIBUTION.md Assets/vscode-pets/LICENSE.upstream Assets/vscode-pets/credits.upstream.md "$DEST/Contents/Resources/vscode-pets/"
+
 cat > "$DEST/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

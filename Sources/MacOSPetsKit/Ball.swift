@@ -162,10 +162,6 @@ public struct BallPhysics: Sendable {
         // has left the desktop entirely. If some display sits directly below
         // its x position, drop it onto that one so it lands instead of
         // falling into the void between mismatched monitor edges.
-        // The ball is outside every display: it is over a gap between monitors, or
-        // has left the desktop entirely. If some display sits directly below
-        // its x position, drop it onto that one so it lands instead of
-        // falling into the void between mismatched monitor edges.
         if governing == nil, let below = displays.firstIndex(where: { $0.horizontallyContains(p.x) }) {
             let floorY = displays[below].minY + r
             if p.y < floorY {

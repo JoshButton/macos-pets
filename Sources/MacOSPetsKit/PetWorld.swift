@@ -163,14 +163,15 @@ public struct PetWorld: Sendable {
                 // when it has actually reached the shared boundary.
                 let goingRight = target.x > pet.position.x
                 let current = displays[pet.displayIndex]
-                let edge = goingRight ? current.maxX - 12 : current.minX + 12
+                let half = max(12.0, pet.species.footprintWidth / 2)
+                let edge = goingRight ? current.maxX - half : current.minX + half
 
                 if abs(pet.position.x - edge) < 6 {
                     let newDisplay = displays[targetDisplayIndex]
                     // Step onto the neighbour at the shared seam.
                     let entryX = goingRight
-                        ? max(newDisplay.minX + 12, current.maxX - 12)
-                        : min(newDisplay.maxX - 12, current.minX + 12)
+                        ? max(newDisplay.minX + half, current.maxX - half)
+                        : min(newDisplay.maxX - half, current.minX + half)
                     pet.displayIndex = targetDisplayIndex
                     pet.position = PetPoint(x: entryX, y: newDisplay.minY + groundInset)
                     pet.facing = goingRight ? 1 : -1
@@ -288,9 +289,11 @@ public struct PetWorld: Sendable {
         }
     }
 
-    /// Keeps a pet inside the display it currently belongs to.
+    /// Keeps a pet inside the display it currently belongs to. The margin is
+    /// half the pet's on-screen footprint so wide sprites (crab ≈107pt) stay
+    /// fully on screen instead of overhanging the edge.
     private func clampToDisplay(_ pet: inout Pet, display: PetRect) {
-        let margin = 12.0
+        let margin = max(12.0, pet.species.footprintWidth / 2)
         // Monitors can be narrower than 2*margin; never invert the range.
         let lower = display.minX + margin
         let upper = max(display.maxX - margin, lower)

@@ -34,7 +34,9 @@ enum SelfTest {
         testPetsDoNotGetStuck()
         testPetsTransitionDisplays()
         testPetsStayInBounds()
+        testPetsCrossBetweenDisplaysOverTime()
         testSpritePalettesResolve()
+        testGifAssetsResolve()
 
         print("\(checks - failures)/\(checks) checks passed")
         if failures > 0 {
@@ -276,6 +278,38 @@ enum SelfTest {
         testPetsStayInBounds()
         testPetsCrossBetweenDisplaysOverTime()
         testSpritePalettesResolve()
+        testGifAssetsResolve()
+    }
+
+    /// Every GIF-backed species must resolve its files on disk and decode at
+    /// least one frame. Catches missing downloads, wrong filenames, and
+    /// corrupt GIFs before they become invisible pets.
+    private static func testGifAssetsResolve() {
+        var missing: [String] = []
+        var undecodable: [String] = []
+        for species in PetCatalogue.all {
+            guard let gif = species.gif else {
+                missing.append("\(species.id): no gif reference")
+                continue
+            }
+            for pose in PetPose.allCases {
+                guard let rel = gif.relativePath(for: pose) else {
+                    missing.append("\(species.id)/\(pose.rawValue): no file mapping")
+                    continue
+                }
+                guard let entry = GifFrameStore.shared.entry(forRelativePath: rel) else {
+                    missing.append("\(species.id)/\(pose.rawValue): missing file \(rel)")
+                    continue
+                }
+                if entry.frames.isEmpty { undecodable.append("\(species.id)/\(pose.rawValue)") }
+            }
+            // Sanity: footprint must be positive and reasonable.
+            if !(species.footprintWidth > 10 && species.footprintWidth < 400) {
+                missing.append("\(species.id): implausible footprint \(species.footprintWidth)")
+            }
+        }
+        expect(missing.isEmpty, "all GIF assets resolve: \(missing.prefix(4))")
+        expect(undecodable.isEmpty, "all GIFs decode: \(undecodable.prefix(4))")
     }
 
 /// A laptop screen beside a taller external display, vertically offset.
@@ -423,9 +457,11 @@ private static func testPetsCrossBetweenDisplaysOverTime() {
             }
         }
 
-        // Each pet should show more than one pose over the run, proving none
-        // is permanently wedged into a single activity.
-        for speciesID in ["cat", "dog", "duck", "snake"] {
+        // Each spawned pet should show more than one pose over the run, proving
+        // none is permanently wedged into a single activity. Derive the IDs
+        // from what was actually spawned so the check can't drift from the
+        // roster above.
+        for speciesID in PetCatalogue.all.prefix(4).map(\.id) {
             let posesForSpecies = Set(
                 observedPoses
                     .filter { $0.hasPrefix("\(speciesID):") }
@@ -442,7 +478,7 @@ private static func testPetsCrossBetweenDisplaysOverTime() {
         ]
         var world = PetWorld(displays: displays, seed: 99)
         // Push a pet at a target on the far monitor.
-        let cat = PetCatalogue.species(id: "cat")!
+        let cat = PetCatalogue.species(id: "dog-black")!
         world.pets.append(Pet(species: cat, position: PetPoint(x: 500, y: 26), displayIndex: 0))
         world.pets[0].activity = .walking(to: PetPoint(x: 1800, y: 26))
 
@@ -473,7 +509,7 @@ private static func testPetsCrossBetweenDisplaysOverTime() {
         // A character with no palette entry renders as loud magenta, which is
         // a reliable signal of an authoring typo.
         var offenders: [String] = []
-        for species in PetCatalogue.all {
+        for species in PetCatalogue.proceduralAll {
             let all = species.sprites.idle + species.sprites.walk + species.sprites.sit + species.sprites.sleep
             for s in all {
                 for y in 0..<s.height {
@@ -489,7 +525,7 @@ private static func testPetsCrossBetweenDisplaysOverTime() {
         expect(offenders.isEmpty, "no unmapped palette characters: \(offenders.prefix(3))")
 
         // Every sprite in a set must share dimensions or animation will jitter.
-        for species in PetCatalogue.all {
+        for species in PetCatalogue.proceduralAll {
             let frames = species.sprites.frames(for: .walk) + species.sprites.frames(for: .idle)
             let widths = Set(frames.map(\.width))
             expect(widths.count == 1, "\(species.id) frames share a consistent width")

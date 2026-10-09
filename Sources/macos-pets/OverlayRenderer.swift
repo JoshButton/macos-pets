@@ -99,6 +99,49 @@ struct OverlayRenderer {
     }
 
     private func draw(_ pet: Pet, in context: CGContext, at local: CGPoint, pixelScale: Double) {
+        // Verbatim GIF artwork takes precedence. Facing is a canvas transform
+        // (translate + scale), never mirrored pixel data, to respect ND terms.
+        if let gif = pet.species.gif,
+           let got = GifFrameStore.shared.frame(for: pet.species, pose: pet.pose, clock: pet.animationClock) {
+            let targetH = CGFloat(gif.targetHeight)
+            let imgSize = got.size
+            guard imgSize.height > 0 else { return }
+            let s = targetH / imgSize.height
+            let drawW = imgSize.width * s
+            let drawH = targetH
+            // Feet sit on the floor: lift by the transparent bottom inset.
+            let insetPts = got.bottomInset * s
+            let x = local.x - drawW / 2
+            let y = local.y + insetPts
+
+            // Ground shadow, width-aware so wide sprites read correctly.
+            context.saveGState()
+            context.setFillColor(NSColor.black.withAlphaComponent(0.20).cgColor)
+            context.fillEllipse(in: CGRect(
+                x: local.x - drawW * 0.32,
+                y: local.y - 2,
+                width: drawW * 0.64,
+                height: max(drawW * 0.10, 4)
+            ))
+            context.restoreGState()
+
+            context.saveGState()
+            context.interpolationQuality = .none
+            // Center-origin draw: vertical flip corrects CGImage (y-up) for
+            // the flipped view (y-down); horizontal flip is facing, applied
+            // as a display transform only — the asset bytes are untouched.
+            context.translateBy(x: local.x, y: y + drawH / 2)
+            context.scaleBy(x: pet.facing < 0 ? -1 : 1, y: -1)
+            context.draw(got.image, in: CGRect(x: -drawW / 2, y: -drawH / 2, width: drawW, height: drawH))
+            context.restoreGState()
+            return
+        }
+
+        drawProcedural(pet, in: context, at: local, pixelScale: pixelScale)
+    }
+
+    /// Original hand-drawn fallback (our own art; pixel mirroring is fine).
+    private func drawProcedural(_ pet: Pet, in context: CGContext, at local: CGPoint, pixelScale: Double) {
         let frames = pet.species.sprites.frames(for: pet.pose)
         guard !frames.isEmpty else { return }
 

@@ -1,0 +1,1478 @@
+{
+ "media/chicken/brown_idle_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/brown_run_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/brown_swipe_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/brown_walk_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/brown_walk_fast_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/brown_with_ball_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/gray_idle_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/gray_run_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/gray_swipe_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/gray_walk_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/gray_walk_fast_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/gray_with_ball_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/white_idle_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/white_run_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/white_swipe_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/white_walk_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/white_walk_fast_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/chicken/white_with_ball_8fps.gif": {
+  "h": 101,
+  "w": 111
+ },
+ "media/clippy/black_idle_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/black_run_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/black_swipe_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/black_walk_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/black_walk_fast_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/black_with_ball_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/brown_idle_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/brown_run_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/brown_swipe_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/brown_walk_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/brown_walk_fast_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/brown_with_ball_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/green_idle_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/green_run_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/green_swipe_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/green_walk_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/green_walk_fast_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/green_with_ball_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/yellow_idle_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/yellow_run_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/yellow_swipe_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/yellow_walk_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/yellow_walk_fast_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/clippy/yellow_with_ball_8fps.gif": {
+  "h": 142,
+  "w": 112
+ },
+ "media/cockatiel/brown_idle_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/brown_run_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/brown_swipe_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/brown_walk_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/brown_walk_fast_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/brown_with_ball_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/gray_idle_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/gray_run_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/gray_swipe_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/gray_walk_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/gray_walk_fast_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/cockatiel/gray_with_ball_8fps.gif": {
+  "h": 70,
+  "w": 90
+ },
+ "media/crab/red_idle_8fps.gif": {
+  "h": 90,
+  "w": 150
+ },
+ "media/crab/red_run_8fps.gif": {
+  "h": 90,
+  "w": 150
+ },
+ "media/crab/red_swipe_8fps.gif": {
+  "h": 90,
+  "w": 150
+ },
+ "media/crab/red_walk_8fps.gif": {
+  "h": 90,
+  "w": 150
+ },
+ "media/crab/red_walk_fast_8fps.gif": {
+  "h": 90,
+  "w": 150
+ },
+ "media/crab/red_with_ball_8fps.gif": {
+  "h": 90,
+  "w": 150
+ },
+ "media/deno/green_idle_8fps.gif": {
+  "h": 30,
+  "w": 34
+ },
+ "media/deno/green_run_8fps.gif": {
+  "h": 28,
+  "w": 40
+ },
+ "media/deno/green_swipe_8fps.gif": {
+  "h": 36,
+  "w": 37
+ },
+ "media/deno/green_walk_8fps.gif": {
+  "h": 26,
+  "w": 35
+ },
+ "media/deno/green_walk_fast_8fps.gif": {
+  "h": 28,
+  "w": 40
+ },
+ "media/deno/green_with_ball_8fps.gif": {
+  "h": 25,
+  "w": 37
+ },
+ "media/dog/akita_idle_8fps.gif": {
+  "h": 115,
+  "w": 174
+ },
+ "media/dog/akita_lie_8fps.gif": {
+  "h": 115,
+  "w": 174
+ },
+ "media/dog/akita_run_8fps.gif": {
+  "h": 115,
+  "w": 174
+ },
+ "media/dog/akita_swipe_8fps.gif": {
+  "h": 115,
+  "w": 174
+ },
+ "media/dog/akita_walk_8fps.gif": {
+  "h": 115,
+  "w": 174
+ },
+ "media/dog/akita_walk_fast_8fps.gif": {
+  "h": 115,
+  "w": 174
+ },
+ "media/dog/akita_with_ball_8fps.gif": {
+  "h": 115,
+  "w": 174
+ },
+ "media/dog/black_idle_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/dog/black_lie_8fps.gif": {
+  "h": 75,
+  "w": 140
+ },
+ "media/dog/black_run_8fps.gif": {
+  "h": 95,
+  "w": 140
+ },
+ "media/dog/black_swipe_8fps.gif": {
+  "h": 95,
+  "w": 120
+ },
+ "media/dog/black_walk_8fps.gif": {
+  "h": 85,
+  "w": 120
+ },
+ "media/dog/black_walk_fast_8fps.gif": {
+  "h": 85,
+  "w": 105
+ },
+ "media/dog/black_with_ball_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/dog/brown_idle_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/dog/brown_lie_8fps.gif": {
+  "h": 75,
+  "w": 140
+ },
+ "media/dog/brown_run_8fps.gif": {
+  "h": 95,
+  "w": 140
+ },
+ "media/dog/brown_swipe_8fps.gif": {
+  "h": 95,
+  "w": 120
+ },
+ "media/dog/brown_walk_8fps.gif": {
+  "h": 85,
+  "w": 120
+ },
+ "media/dog/brown_walk_fast_8fps.gif": {
+  "h": 85,
+  "w": 105
+ },
+ "media/dog/brown_with_ball_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/dog/red_idle_8fps.gif": {
+  "h": 96,
+  "w": 120
+ },
+ "media/dog/red_lie_8fps.gif": {
+  "h": 79,
+  "w": 147
+ },
+ "media/dog/red_run_8fps.gif": {
+  "h": 95,
+  "w": 140
+ },
+ "media/dog/red_swipe_8fps.gif": {
+  "h": 95,
+  "w": 130
+ },
+ "media/dog/red_walk_8fps.gif": {
+  "h": 89,
+  "w": 129
+ },
+ "media/dog/red_walk_fast_8fps.gif": {
+  "h": 88,
+  "w": 111
+ },
+ "media/dog/red_with_ball_8fps.gif": {
+  "h": 93,
+  "w": 121
+ },
+ "media/dog/white_idle_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/dog/white_lie_8fps.gif": {
+  "h": 75,
+  "w": 140
+ },
+ "media/dog/white_run_8fps.gif": {
+  "h": 95,
+  "w": 140
+ },
+ "media/dog/white_swipe_8fps.gif": {
+  "h": 95,
+  "w": 120
+ },
+ "media/dog/white_walk_8fps.gif": {
+  "h": 85,
+  "w": 120
+ },
+ "media/dog/white_walk_fast_8fps.gif": {
+  "h": 85,
+  "w": 105
+ },
+ "media/dog/white_with_ball_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/fox/red_idle_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/red_lie_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/red_run_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/red_swipe_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/red_walk_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/red_walk_fast_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/red_with_ball_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/white_idle_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/white_lie_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/white_run_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/white_swipe_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/white_walk_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/white_walk_fast_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/fox/white_with_ball_8fps.gif": {
+  "h": 75,
+  "w": 92
+ },
+ "media/horse/black_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/black_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/black_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/black_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/black_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/black_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/black_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/brown_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/brown_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/brown_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/brown_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/brown_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/brown_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/brown_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/magical_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/magical_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/magical_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/magical_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/magical_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/magical_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/magical_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_beige_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_beige_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_beige_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_beige_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_beige_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_beige_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_beige_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_black_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_black_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_black_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_black_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_black_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_black_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_black_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_brown_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_brown_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_brown_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_brown_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_brown_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_brown_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/paint_brown_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_beige_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_beige_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_beige_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_beige_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_beige_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_beige_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_beige_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_black_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_black_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_black_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_black_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_black_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_black_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_black_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_brown_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_brown_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_brown_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_brown_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_brown_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_brown_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/socks_brown_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/warrior_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/warrior_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/warrior_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/warrior_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/warrior_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/warrior_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/warrior_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/white_idle_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/white_run_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/white_stand_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/white_swipe_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/white_walk_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/white_walk_fast_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/horse/white_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 80
+ },
+ "media/mod/purple_idle_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/mod/purple_run_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/mod/purple_swipe_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/mod/purple_walk_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/mod/purple_walk_fast_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/mod/purple_with_ball_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/monkey/gray_idle_8fps.gif": {
+  "h": 150,
+  "w": 150
+ },
+ "media/monkey/gray_run_8fps.gif": {
+  "h": 150,
+  "w": 150
+ },
+ "media/monkey/gray_swipe_8fps.gif": {
+  "h": 150,
+  "w": 150
+ },
+ "media/monkey/gray_walk_8fps.gif": {
+  "h": 150,
+  "w": 150
+ },
+ "media/monkey/gray_with_ball_8fps.gif": {
+  "h": 150,
+  "w": 150
+ },
+ "media/morph/purple_idle_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/morph/purple_run_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/morph/purple_swipe_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/morph/purple_walk_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/morph/purple_walk_fast_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/morph/purple_with_ball_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/panda/black_idle_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/black_lie_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/black_run_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/black_swipe_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/black_walk_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/black_walk_fast_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/black_with_ball_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/brown_idle_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/brown_lie_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/brown_run_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/brown_swipe_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/brown_walk_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/brown_walk_fast_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/panda/brown_with_ball_8fps.gif": {
+  "h": 96,
+  "w": 96
+ },
+ "media/raccoon/gray_idle_8fps.gif": {
+  "h": 460,
+  "w": 696
+ },
+ "media/raccoon/gray_jimothy_idle_8fps.gif": {
+  "h": 80,
+  "w": 120
+ },
+ "media/raccoon/gray_jimothy_lie_8fps.gif": {
+  "h": 80,
+  "w": 120
+ },
+ "media/raccoon/gray_jimothy_run_8fps.gif": {
+  "h": 80,
+  "w": 120
+ },
+ "media/raccoon/gray_jimothy_swipe_8fps.gif": {
+  "h": 80,
+  "w": 120
+ },
+ "media/raccoon/gray_jimothy_walk_8fps.gif": {
+  "h": 80,
+  "w": 120
+ },
+ "media/raccoon/gray_jimothy_walk_fast_8fps.gif": {
+  "h": 80,
+  "w": 120
+ },
+ "media/raccoon/gray_jimothy_with_ball_8fps.gif": {
+  "h": 80,
+  "w": 120
+ },
+ "media/raccoon/gray_lie_8fps.gif": {
+  "h": 460,
+  "w": 696
+ },
+ "media/raccoon/gray_run_8fps.gif": {
+  "h": 427,
+  "w": 688
+ },
+ "media/raccoon/gray_swipe_8fps.gif": {
+  "h": 460,
+  "w": 696
+ },
+ "media/raccoon/gray_walk_8fps.gif": {
+  "h": 427,
+  "w": 688
+ },
+ "media/raccoon/gray_walk_fast_8fps.gif": {
+  "h": 427,
+  "w": 688
+ },
+ "media/raccoon/gray_with_ball_8fps.gif": {
+  "h": 460,
+  "w": 696
+ },
+ "media/rat/brown_idle_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/brown_run_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/brown_swipe_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/brown_walk_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/brown_walk_fast_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/brown_with_ball_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/gray_idle_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/gray_run_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/gray_swipe_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/gray_walk_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/gray_walk_fast_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/gray_with_ball_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/white_idle_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/white_run_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/white_swipe_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/white_walk_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/white_walk_fast_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rat/white_with_ball_8fps.gif": {
+  "h": 95,
+  "w": 135
+ },
+ "media/rocky/gray_idle_8fps.gif": {
+  "h": 120,
+  "w": 160
+ },
+ "media/rocky/gray_run_8fps.gif": {
+  "h": 120,
+  "w": 160
+ },
+ "media/rocky/gray_swipe_8fps.gif": {
+  "h": 120,
+  "w": 160
+ },
+ "media/rocky/gray_walk_8fps.gif": {
+  "h": 120,
+  "w": 160
+ },
+ "media/rocky/gray_walk_fast_8fps.gif": {
+  "h": 120,
+  "w": 160
+ },
+ "media/rubber-duck/yellow_idle_8fps.gif": {
+  "h": 80,
+  "w": 90
+ },
+ "media/rubber-duck/yellow_run_8fps.gif": {
+  "h": 80,
+  "w": 90
+ },
+ "media/rubber-duck/yellow_swipe_8fps.gif": {
+  "h": 80,
+  "w": 90
+ },
+ "media/rubber-duck/yellow_walk_8fps.gif": {
+  "h": 80,
+  "w": 90
+ },
+ "media/rubber-duck/yellow_walk_fast_8fps.gif": {
+  "h": 80,
+  "w": 90
+ },
+ "media/rubber-duck/yellow_with_ball_8fps.gif": {
+  "h": 80,
+  "w": 90
+ },
+ "media/skeleton/blue_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/blue_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/blue_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/blue_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/blue_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/blue_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/brown_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/brown_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/brown_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/brown_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/brown_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/brown_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/green_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/green_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/green_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/green_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/green_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/green_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/orange_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/orange_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/orange_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/orange_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/orange_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/orange_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/pink_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/pink_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/pink_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/pink_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/pink_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/pink_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/purple_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/purple_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/purple_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/purple_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/purple_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/purple_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/red_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/red_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/red_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/red_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/red_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/red_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/warrior_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/warrior_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/warrior_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/warrior_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/warrior_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/warrior_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/white_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/white_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/white_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/white_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/white_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/white_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/yellow_idle_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/yellow_run_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/yellow_stand_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/yellow_swipe_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/yellow_walk_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/skeleton/yellow_with_ball_8fps.gif": {
+  "h": 64,
+  "w": 68
+ },
+ "media/snail/brown_idle_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/snail/brown_run_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/snail/brown_swipe_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/snail/brown_walk_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/snail/brown_walk_fast_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/snail/brown_with_ball_8fps.gif": {
+  "h": 100,
+  "w": 100
+ },
+ "media/snake/green_idle_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/snake/green_run_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/snake/green_swipe_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/snake/green_walk_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/snake/green_walk_fast_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/snake/green_with_ball_8fps.gif": {
+  "h": 90,
+  "w": 90
+ },
+ "media/totoro/gray_fall_from_grab_8fps.gif": {
+  "h": 204,
+  "w": 200
+ },
+ "media/totoro/gray_idle_8fps.gif": {
+  "h": 250,
+  "w": 250
+ },
+ "media/totoro/gray_jump_8fps.gif": {
+  "h": 204,
+  "w": 200
+ },
+ "media/totoro/gray_land_8fps.gif": {
+  "h": 204,
+  "w": 200
+ },
+ "media/totoro/gray_lie_8fps.gif": {
+  "h": 150,
+  "w": 200
+ },
+ "media/totoro/gray_run_8fps.gif": {
+  "h": 238,
+  "w": 500
+ },
+ "media/totoro/gray_swipe_8fps.gif": {
+  "h": 396,
+  "w": 600
+ },
+ "media/totoro/gray_walk_8fps.gif": {
+  "h": 220,
+  "w": 220
+ },
+ "media/totoro/gray_wallclimb_8fps.gif": {
+  "h": 220,
+  "w": 220
+ },
+ "media/totoro/gray_wallgrab_8fps.gif": {
+  "h": 204,
+  "w": 200
+ },
+ "media/totoro/gray_with_ball_8fps.gif": {
+  "h": 250,
+  "w": 250
+ },
+ "media/turtle/green_idle_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/green_lie_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/green_run_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/green_swipe_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/green_walk_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/green_walk_fast_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/green_with_ball_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/orange_idle_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/orange_lie_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/orange_run_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/orange_swipe_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/orange_walk_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/orange_walk_fast_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/turtle/orange_with_ball_8fps.gif": {
+  "h": 90,
+  "w": 115
+ },
+ "media/zappy/yellow_idle_8fps.gif": {
+  "h": 80,
+  "w": 100
+ },
+ "media/zappy/yellow_run_8fps.gif": {
+  "h": 80,
+  "w": 100
+ },
+ "media/zappy/yellow_swipe_8fps.gif": {
+  "h": 80,
+  "w": 100
+ },
+ "media/zappy/yellow_walk_8fps.gif": {
+  "h": 80,
+  "w": 100
+ },
+ "media/zappy/yellow_walk_fast_8fps.gif": {
+  "h": 80,
+  "w": 100
+ },
+ "media/zappy/yellow_with_ball_8fps.gif": {
+  "h": 80,
+  "w": 100
+ }
+}
