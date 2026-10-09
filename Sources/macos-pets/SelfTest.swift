@@ -320,6 +320,7 @@ enum SelfTest {
         let cases: [(PetCommand, [String])] = [
             (.add(speciesID: "dog-black"), ["add", "dog-black"]),
             (.addRandom, ["add-random"]),
+            (.remove(speciesID: "crab"), ["remove", "crab"]),
             (.removeLast, ["remove-last"]),
             (.clear, ["clear"]),
             (.throwBall, ["throw"]),
@@ -343,6 +344,23 @@ enum SelfTest {
         expect(PetCommand.parse(notificationName: "dev.local.macos-pets.cmd.frobnicate") == nil, "unknown actions ignored")
         expect(PetCommand(cliParts: []) == nil, "empty CLI rejected")
         expect(PetCommand(cliParts: ["add"]) == nil, "bare add rejected")
+        expect(PetCommand(cliParts: ["remove"]) == nil, "bare remove rejected")
+
+        // Targeted removal takes the newest of the species and leaves others.
+        var removal = PetWorld(displays: [PetRect(x: 0, y: 0, width: 1000, height: 800)], seed: 91)
+        let dog = PetCatalogue.species(id: "dog-black")!
+        let crab = PetCatalogue.species(id: "crab")!
+        removal.spawn(dog, on: 0)
+        removal.spawn(crab, on: 0)
+        removal.spawn(dog, on: 0)
+        expect(removal.pets.count == 3, "roster starts with three pets")
+        expect(removal.remove(speciesID: "dog-black"), "removing a present species reports success")
+        expect(removal.pets.count == 2, "one dog removed")
+        expect(removal.pets.filter { $0.species.id == "dog-black" }.count == 1, "the other dog survives")
+        expect(removal.pets.contains { $0.species.id == "crab" }, "the crab survives")
+        expect(!removal.remove(speciesID: "totoro"), "removing an absent species reports failure")
+        expect(removal.pets.count == 2, "absent removal changes nothing")
+        expect(!removal.remove(speciesID: "nope"), "unknown ids are a no-op")
 
         // File encoding round-trips through the real queue drain.
         for (command, _) in cases {

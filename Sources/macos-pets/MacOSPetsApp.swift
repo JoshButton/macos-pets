@@ -81,6 +81,8 @@ final class AppController: NSObject, NSApplicationDelegate {
         case .addRandom:
             guard let species = PetCatalogue.all.randomElement() else { return }
             world.spawn(species, on: layout.mouseDisplayIndex ?? 0)
+        case .remove(let id):
+            world.remove(speciesID: id)
         case .removeLast:
             _ = world.pets.popLast()
         case .clear:

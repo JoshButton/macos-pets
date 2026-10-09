@@ -133,6 +133,17 @@ public struct PetWorld: Sendable {
 
     public mutating func removeAll() { pets.removeAll() }
 
+    /// Removes the most recently added pet of a species. Returns whether one
+    /// was found; unknown ids are a no-op rather than an error.
+    @discardableResult
+    public mutating func remove(speciesID: String) -> Bool {
+        guard let index = pets.lastIndex(where: { $0.species.id == speciesID }) else {
+            return false
+        }
+        pets.remove(at: index)
+        return true
+    }
+
     /// Advances every pet by `dt` seconds. The ball is `inout` so a catch can
     /// attach it to the catcher (upstream hides the ball canvas on catch).
     public mutating func step(dt: Double, ball: inout Ball?, cursor: PetPoint?) {

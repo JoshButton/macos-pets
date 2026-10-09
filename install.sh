@@ -133,11 +133,12 @@ exec "$BIN" send $3
 EOF
         chmod +x "$SCRIPT_DIR/$1"
     }
-    # Per-species add scripts from the live catalogue.
+    # Per-species add/remove scripts from the live catalogue.
     "$DEST/Contents/MacOS/macos-pets" --list-species 2>/dev/null | while IFS='|' read -r id name; do
         [ -z "$id" ] && continue
         slug=$(echo "$id" | tr ' ' '-')
         write_script "add-pet-$slug.sh" "Add $name" "add $id" silent
+        write_script "remove-pet-$slug.sh" "Remove $name" "remove $id" silent
     done
     write_script "add-random-pet.sh" "Add Random Pet" "add-random" silent
     write_script "remove-last-pet.sh" "Remove Last Pet" "remove-last" silent

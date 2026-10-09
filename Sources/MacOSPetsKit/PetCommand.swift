@@ -18,6 +18,7 @@ import Foundation
 public enum PetCommand: Sendable, Equatable {
     case add(speciesID: String)
     case addRandom
+    case remove(speciesID: String)
     case removeLast
     case clear
     case throwBall
@@ -47,6 +48,9 @@ public enum PetCommand: Sendable, Equatable {
             guard let arg, !arg.isEmpty else { return nil }
             return .add(speciesID: arg)
         case "add-random": return .addRandom
+        case "remove":
+            guard let arg, !arg.isEmpty else { return nil }
+            return .remove(speciesID: arg)
         case "remove-last": return .removeLast
         case "clear": return .clear
         case "throw": return .throwBall
@@ -64,6 +68,10 @@ public enum PetCommand: Sendable, Equatable {
         guard let first = cliParts.first else { return nil }
         if first == "add", cliParts.count >= 2 {
             self = .add(speciesID: cliParts[1])
+            return
+        }
+        if first == "remove", cliParts.count >= 2 {
+            self = .remove(speciesID: cliParts[1])
             return
         }
         // Single-token form: the action, optionally with `-id` suffix for add.
@@ -91,6 +99,7 @@ public enum PetCommand: Sendable, Equatable {
         switch self {
         case .add(let id): return "add \(id)"
         case .addRandom: return "add-random"
+        case .remove(let id): return "remove \(id)"
         case .removeLast: return "remove-last"
         case .clear: return "clear"
         case .throwBall: return "throw"
@@ -143,6 +152,7 @@ public enum PetCommand: Sendable, Equatable {
         switch self {
         case .add(let id): return "\(Self.notifyPrefix).add.\(id)"
         case .addRandom: return "\(Self.notifyPrefix).add-random"
+        case .remove(let id): return "\(Self.notifyPrefix).remove.\(id)"
         case .removeLast: return "\(Self.notifyPrefix).remove-last"
         case .clear: return "\(Self.notifyPrefix).clear"
         case .throwBall: return "\(Self.notifyPrefix).throw"
