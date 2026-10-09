@@ -42,11 +42,12 @@ enum RenderCheck {
             }
         }
 
-        // The centre of the canvas holds the ball, so it must be opaque and red.
+        // The centre of the canvas holds the ball, so it must be opaque and
+        // green (upstream #2ed851).
         if let c = color(rep, x: width / 2, y: height / 2) {
-            if !(c.r > 0.5 && c.g < 0.7 && c.a > 0.9) {
+            if !(c.g > 0.5 && c.r < 0.5 && c.a > 0.9) {
                 failures += 1
-                print("  FAIL: ball centre should be opaque red, got \(c)")
+                print("  FAIL: ball centre should be opaque green, got \(c)")
             }
         } else {
             failures += 1

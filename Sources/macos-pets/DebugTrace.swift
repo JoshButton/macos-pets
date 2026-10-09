@@ -16,7 +16,7 @@ enum DebugTrace {
         }
         var seen: [String: Int] = [:]
         for i in 0..<1800 {
-            world.step(dt: 1.0 / 60.0, ball: nil, cursor: PetPoint(x: 500, y: 400))
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: PetPoint(x: 500, y: 400))
             if i % 60 == 0 {
                 let desc = world.pets.map { "\($0.species.name):\($0.pose)" }.joined(separator: " ")
                 for part in desc.split(separator: " ") {

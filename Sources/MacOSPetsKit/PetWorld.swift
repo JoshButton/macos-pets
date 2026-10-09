@@ -126,17 +126,18 @@ public struct PetWorld: Sendable {
 
     public mutating func removeAll() { pets.removeAll() }
 
-    /// Advances every pet by `dt` seconds.
-    public mutating func step(dt: Double, ball: Ball?, cursor: PetPoint?) {
+    /// Advances every pet by `dt` seconds. The ball is `inout` so a catch can
+    /// attach it to the catcher (upstream hides the ball canvas on catch).
+    public mutating func step(dt: Double, ball: inout Ball?, cursor: PetPoint?) {
         guard !displays.isEmpty else { return }
         var nextPets = pets
         for i in nextPets.indices {
-            stepPet(&nextPets[i], dt: dt, ball: ball, cursor: cursor)
+            stepPet(&nextPets[i], dt: dt, ball: &ball, cursor: cursor)
         }
         pets = nextPets
     }
 
-    private mutating func stepPet(_ pet: inout Pet, dt: Double, ball: Ball?, cursor: PetPoint?) {
+    private mutating func stepPet(_ pet: inout Pet, dt: Double, ball: inout Ball?, cursor: PetPoint?) {
         // If the pet's display disappeared (monitor unplugged), relocate it to
         // the first available one instead of freezing it in place forever.
         guard displays.indices.contains(pet.displayIndex) else {
@@ -168,31 +169,42 @@ public struct PetWorld: Sendable {
 
         switch pet.activity {
         case .chasing:
-            if let ball, ball.state == .flying {
-                let toBall = ball.position - pet.position
-                if abs(toBall.x) > 2 {
-                    pet.facing = toBall.x > 0 ? 1 : -1
+            guard let ballState = ball?.state else {
+                pet.activity = .idle
+                break
+            }
+            switch ballState {
+            case .flying:
+                let dx = ball!.position.x - pet.position.x
+                if abs(dx) > 2 {
+                    pet.facing = dx > 0 ? 1 : -1
                 }
-                let distance = toBall.length
-                if distance > 26 {
-                    move(&pet, toward: ball.position, speed: baseSpeed * 1.9, dt: dt, display: display)
+                // Catch when the ball comes down to the pet and the pet is
+                // under it, matching upstream (ball near the floor and
+                // horizontally aligned). A 2D distance check could never
+                // trigger: pets run along the floor while the ball arcs high
+                // above them.
+                let ballHeight = ball!.position.y - (display.minY + groundInset)
+                if ballHeight < pet.species.catchHeight, abs(dx) < 20 {
+                    catchBall(pet: &pet, ball: &ball)
                 } else {
-                    // Reached it: pick the ball up and start bringing it home.
-                    pet.activity = .fetching
+                    move(&pet, toward: PetPoint(x: ball!.position.x, y: pet.position.y), speed: baseSpeed * 1.9, dt: dt, display: display)
                 }
-            } else if let ball {
+            case .resting:
                 // The ball came to rest mid-chase. Close enough to grab it
                 // means a fetch; otherwise let go rather than grinding against
                 // whatever sits between the pet and the ball's resting spot.
-                let distance = (ball.position - pet.position).length
-                if distance <= 40 {
-                    pet.activity = .fetching
+                if (ball!.position - pet.position).length <= 40 {
+                    catchBall(pet: &pet, ball: &ball)
                 } else {
                     pet.activity = .idle
                     pet.animationClock = 0
                 }
-            } else {
+            case .carried, .held:
+                // Taken by another pet, or by the user: stand down, matching
+                // upstream's chase-cancel when the ball is paused.
                 pet.activity = .idle
+                pet.animationClock = 0
             }
 
         case .walking(let target):
@@ -352,6 +364,17 @@ public struct PetWorld: Sendable {
             pet.activity = decideNextActivity(pet: pet, display: display, cursor: cursor)
             pet.animationClock = 0
         }
+    }
+
+    /// Catches the ball: the pet parades it (painted `with_ball` art) while the
+    /// free ball hides, exactly like upstream hiding the ball canvas on catch.
+    /// It reappears on the next user throw.
+    private func catchBall(pet: inout Pet, ball: inout Ball?) {
+        pet.activity = .fetching
+        pet.animationClock = 0
+        ball?.state = .carried
+        ball?.velocity = .zero
+        ball?.restingOn = nil
     }
 
     private mutating func decideNextActivity(pet: Pet, display: PetRect, cursor: PetPoint?) -> Pet.Activity {

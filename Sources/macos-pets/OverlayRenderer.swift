@@ -36,7 +36,10 @@ struct OverlayRenderer {
             CGPoint(x: p.x - origin.x, y: height - (p.y - origin.y))
         }
 
-        if displays.isEmpty || displays.contains(where: { $0.intersects(ball.bounds) }) {
+        // A carried ball is hidden: the catcher's `with_ball` art shows it in
+        // the mouth, matching upstream hiding the ball canvas on catch.
+        if ball.state != .carried,
+           displays.isEmpty || displays.contains(where: { $0.intersects(ball.bounds) }) {
             drawBall(in: context, at: toLocal(ball.position), radius: ball.radius)
         }
 
@@ -68,9 +71,11 @@ struct OverlayRenderer {
             context.clip()
         }
 
+        // Upstream green (#2ed851): the `with_ball` art carries a green ball, so
+        // the free ball must match or the pet parades the wrong colour.
         let colors = [
-            NSColor(calibratedRed: 0.98, green: 0.52, blue: 0.44, alpha: 1).cgColor,
-            NSColor(calibratedRed: 0.74, green: 0.24, blue: 0.21, alpha: 1).cgColor,
+            NSColor(calibratedRed: 0.18, green: 0.85, blue: 0.32, alpha: 1).cgColor,
+            NSColor(calibratedRed: 0.10, green: 0.55, blue: 0.20, alpha: 1).cgColor,
         ] as CFArray
         if let gradient = CGGradient(
             colorsSpace: CGColorSpaceCreateDeviceRGB(),

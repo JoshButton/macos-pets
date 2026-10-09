@@ -4,6 +4,12 @@ import MacOSPetsKit
 /// A tiny assertion harness. The machine only has the Command Line Tools, so
 /// neither XCTest nor swift-testing is available; this runs as part of
 /// `--selftest` instead.
+/// Shared mutable "no ball" optional for step() calls that need no ball.
+/// A file-scope var is required because `inout` cannot bind a literal nil.
+struct SelfTestNoBall {
+    static var value: Ball? = nil
+}
+
 enum SelfTest {
 
     private static var failures = 0
@@ -43,6 +49,8 @@ enum SelfTest {
         testTotoroClimbsOuterWall()
         testDuckDoesNotClimb()
         testChaseEndsWhenBallRests()
+        testCatchHidesBall()
+        testSecondPetStandsDown()
         testSpritePalettesResolve()
         testGifAssetsResolve()
 
@@ -293,8 +301,57 @@ enum SelfTest {
         testTotoroClimbsOuterWall()
         testDuckDoesNotClimb()
         testChaseEndsWhenBallRests()
+        testCatchHidesBall()
+        testSecondPetStandsDown()
         testSpritePalettesResolve()
         testGifAssetsResolve()
+    }
+
+    /// Catching hides the free ball (upstream hides the ball canvas): the
+    /// catcher parades the painted `with_ball` art, so no duplicate ball.
+    private static func testCatchHidesBall() {
+        let displays = [PetRect(x: 0, y: 0, width: 1000, height: 800)]
+        var world = PetWorld(displays: displays, seed: 41)
+        let species = PetCatalogue.species(id: "dog-black")!
+        var ball: Ball? = Ball(position: PetPoint(x: 500, y: 40))
+        ball?.velocity = PetPoint(x: 0, y: -10) // low and drifting, still flying
+        world.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 480, y: 6),
+            displayIndex: 0, facing: 1
+        ))
+        world.pets[0].activity = .chasing
+
+        var caught = false
+        for _ in 0..<600 {
+            world.step(dt: 1.0 / 60.0, ball: &ball, cursor: nil)
+            if case .fetching = world.pets[0].activity { caught = true; break }
+        }
+        expect(caught, "pet close to a flying ball catches it")
+        expect(ball?.state == .carried, "caught ball hides (state carried, not left on the ground)")
+    }
+
+    /// A second pet chasing a ball another pet just caught stands down
+    /// instead of piling on (upstream chase-cancel when the ball pauses).
+    private static func testSecondPetStandsDown() {
+        let displays = [PetRect(x: 0, y: 0, width: 1000, height: 800)]
+        var world = PetWorld(displays: displays, seed: 43)
+        let species = PetCatalogue.species(id: "dog-black")!
+        var ball: Ball? = Ball(position: PetPoint(x: 500, y: 100))
+        ball?.state = .carried // already caught by someone
+        world.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 200, y: 6),
+            displayIndex: 0, facing: 1
+        ))
+        world.pets[0].activity = .chasing
+        for _ in 0..<120 {
+            world.step(dt: 1.0 / 60.0, ball: &ball, cursor: nil)
+        }
+        let activity = world.pets[0].activity
+        let gaveUp: Bool
+        if case .chasing = activity { gaveUp = false } else { gaveUp = true }
+        expect(gaveUp, "second pet gives up a chase for an already-caught ball (now \(activity))")
     }
 
     /// A pet mid-chase when the ball comes to rest must not grind against the
@@ -302,8 +359,8 @@ enum SelfTest {
     /// is the "dog running into the monitor edge" report.
     private static func testChaseEndsWhenBallRests() {
         let displays = lShapedDisplays()
-        var ball = Ball(position: PetPoint(x: 3000, y: 65))
-        ball.state = .resting
+        var ball: Ball? = Ball(position: PetPoint(x: 3000, y: 65))
+        ball?.state = .resting
 
         // Far from the resting ball: the chase must end, not grind.
         var world = PetWorld(displays: displays, seed: 31)
@@ -315,7 +372,7 @@ enum SelfTest {
         ))
         world.pets[0].activity = .chasing
         for _ in 0..<600 {
-            world.step(dt: 1.0 / 60.0, ball: ball, cursor: nil)
+            world.step(dt: 1.0 / 60.0, ball: &ball, cursor: nil)
         }
         let farActivity = world.pets[0].activity
         let stillChasing: Bool
@@ -338,7 +395,7 @@ enum SelfTest {
         ))
         near.pets[0].activity = .chasing
         for _ in 0..<120 {
-            near.step(dt: 1.0 / 60.0, ball: ball, cursor: nil)
+            near.step(dt: 1.0 / 60.0, ball: &ball, cursor: nil)
         }
         let nearActivity = near.pets[0].activity
         let fetched: Bool
@@ -393,7 +450,7 @@ enum SelfTest {
         var sawHang = false
         var maxY = 6.0
         for _ in 0..<3600 {
-            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: nil)
             let p = world.pets[0]
             maxY = max(maxY, p.position.y)
             if p.isAirborne { sawClimb = true }
@@ -421,7 +478,7 @@ enum SelfTest {
 
         var leftFloor = false
         for _ in 0..<1800 {
-            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: nil)
             if world.pets[0].position.y > 20 { leftFloor = true; break }
         }
         expect(!leftFloor, "duck never leaves the floor at an outer wall")
@@ -442,7 +499,7 @@ enum SelfTest {
         world.pets[0].activity = .walking(to: PetPoint(x: 1500, y: 6))
 
         for _ in 0..<120 {
-            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: nil)
         }
         // It must have given up the unreachable goal (and stayed put rather
         // than teleporting across the desktop).
@@ -474,7 +531,7 @@ enum SelfTest {
         world.pets[0].activity = .walking(to: PetPoint(x: 6000, y: 62))
 
         for _ in 0..<600 {
-            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: nil)
         }
         expect(world.pets[0].displayIndex == 1, "pet stays on its display at the outer wall")
         let display = displays[1]
@@ -505,7 +562,7 @@ enum SelfTest {
         var steps = 0
         for _ in 0..<900 {
             let before = world.pets[0].position.x
-            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: nil)
             let moved = world.pets[0].position.x - before
             if abs(moved) > 0.001 {
                 steps += 1
@@ -655,7 +712,7 @@ private static func testPetsCrossBetweenDisplaysOverTime() {
     // Over a few simulated minutes at least one pet should migrate.
     let startDisplays = Set(world.pets.map(\.displayIndex))
     for _ in 0..<18000 { // ~5 minutes
-        world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+        world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: nil)
     }
     let endDisplays = Set(world.pets.map(\.displayIndex))
     expect(
@@ -682,7 +739,7 @@ private static func testPetsCrossBetweenDisplaysOverTime() {
         // chance at that moment.
         var observedPoses = Set<String>()
         for step in 0..<3600 {
-            world.step(dt: 1.0 / 60.0, ball: nil, cursor: PetPoint(x: 500, y: 400))
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: PetPoint(x: 500, y: 400))
             for pet in world.pets {
                 observedPoses.insert("\(pet.species.id):\(pet.pose.rawValue)")
                 let display = displays[pet.displayIndex]
@@ -720,7 +777,7 @@ private static func testPetsCrossBetweenDisplaysOverTime() {
 
         var moved = false
         for _ in 0..<2000 {
-            world.step(dt: 1.0 / 60.0, ball: nil, cursor: nil)
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: nil)
             if world.pets[0].displayIndex == 1 { moved = true; break }
         }
         expect(moved, "a pet walks across to the other monitor when it wants to")
@@ -733,7 +790,7 @@ private static func testPetsCrossBetweenDisplaysOverTime() {
             world.spawn(species, on: 0)
         }
         for _ in 0..<1200 {
-            world.step(dt: 1.0 / 60.0, ball: nil, cursor: PetPoint(x: -100, y: 300))
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: PetPoint(x: -100, y: 300))
         }
         for pet in world.pets {
             expect(pet.position.x >= -500, "\(pet.species.name) stays inside a display with a negative origin")

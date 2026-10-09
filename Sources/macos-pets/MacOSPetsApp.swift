@@ -108,7 +108,9 @@ final class AppController: NSObject, NSApplicationDelegate {
         if !draggingBall {
             ballPhysics.step(&ball, dt: dt, displays: layout.rects)
         }
-        world.step(dt: dt, ball: ball, cursor: currentCursor())
+        var ballOpt: Ball? = ball
+        world.step(dt: dt, ball: &ballOpt, cursor: currentCursor())
+        ball = ballOpt ?? ball
 
         for w in windows {
             w.contentView?.setNeedsDisplay(w.contentView!.bounds)
@@ -160,6 +162,9 @@ final class AppController: NSObject, NSApplicationDelegate {
     // which keeps normal clicking completely unaffected.
 
     private func handleMouseDown(at global: PetPoint) {
+        // A carried ball is hidden in a pet's mouth: there is nothing to grab.
+        // (Grabbing its stale position would steal it mid-parade.)
+        guard ball.state != .carried else { return }
         let grabRadius = ball.radius + 14
         let delta = PetPoint(x: global.x - ball.position.x, y: global.y - ball.position.y)
         guard delta.length <= grabRadius else { return }

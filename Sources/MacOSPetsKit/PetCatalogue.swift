@@ -145,6 +145,11 @@ public struct PetSpecies: Identifiable, Sendable {
         if let gif { return gif.displayWidth }
         return Double(sprites.pixelWidth) * 3.0
     }
+
+    /// How high above the floor the ball must come for this pet to catch it.
+    public var catchHeight: Double {
+        (gif?.targetHeight ?? 48) + 8
+    }
 }
 
 // MARK: - Catalogue
