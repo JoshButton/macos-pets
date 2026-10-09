@@ -42,6 +42,7 @@ enum SelfTest {
         testCarryArtResolves()
         testTotoroClimbsOuterWall()
         testDuckDoesNotClimb()
+        testChaseEndsWhenBallRests()
         testSpritePalettesResolve()
         testGifAssetsResolve()
 
@@ -291,8 +292,61 @@ enum SelfTest {
         testCarryArtResolves()
         testTotoroClimbsOuterWall()
         testDuckDoesNotClimb()
+        testChaseEndsWhenBallRests()
         testSpritePalettesResolve()
         testGifAssetsResolve()
+    }
+
+    /// A pet mid-chase when the ball comes to rest must not grind against the
+    /// nearest edge forever: far away it lets go, close up it fetches. This
+    /// is the "dog running into the monitor edge" report.
+    private static func testChaseEndsWhenBallRests() {
+        let displays = lShapedDisplays()
+        var ball = Ball(position: PetPoint(x: 3000, y: 65))
+        ball.state = .resting
+
+        // Far from the resting ball: the chase must end, not grind.
+        var world = PetWorld(displays: displays, seed: 31)
+        let species = PetCatalogue.species(id: "dog-black")!
+        world.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 1400, y: 6),
+            displayIndex: 0, facing: 1
+        ))
+        world.pets[0].activity = .chasing
+        for _ in 0..<600 {
+            world.step(dt: 1.0 / 60.0, ball: ball, cursor: nil)
+        }
+        let farActivity = world.pets[0].activity
+        let stillChasing: Bool
+        if case .chasing = farActivity { stillChasing = true } else { stillChasing = false }
+        expect(!stillChasing, "chase ends when the ball rests far away (now \(farActivity))")
+        // Whatever it did instead (wander, possibly across the seam), it
+        // must be inside a display, not wedged past an edge.
+        let d = displays[world.pets[0].displayIndex]
+        expect(
+            world.pets[0].position.x >= d.minX && world.pets[0].position.x <= d.maxX,
+            "pet stays inside a display after giving up the chase"
+        )
+
+        // Right next to the resting ball: it should pick it up instead.
+        var near = PetWorld(displays: displays, seed: 31)
+        near.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 2970, y: 62),
+            displayIndex: 1, facing: 1
+        ))
+        near.pets[0].activity = .chasing
+        for _ in 0..<120 {
+            near.step(dt: 1.0 / 60.0, ball: ball, cursor: nil)
+        }
+        let nearActivity = near.pets[0].activity
+        let fetched: Bool
+        switch nearActivity {
+        case .fetching, .sitting, .idle, .walking: fetched = true
+        default: fetched = false
+        }
+        expect(fetched, "pet near a rested ball fetches or settles (now \(nearActivity))")
     }
 
     /// Chasing pets use the run gait, and fetching pets the carry art.

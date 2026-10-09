@@ -168,7 +168,7 @@ public struct PetWorld: Sendable {
 
         switch pet.activity {
         case .chasing:
-            if let ball {
+            if let ball, ball.state == .flying {
                 let toBall = ball.position - pet.position
                 if abs(toBall.x) > 2 {
                     pet.facing = toBall.x > 0 ? 1 : -1
@@ -179,6 +179,17 @@ public struct PetWorld: Sendable {
                 } else {
                     // Reached it: pick the ball up and start bringing it home.
                     pet.activity = .fetching
+                }
+            } else if let ball {
+                // The ball came to rest mid-chase. Close enough to grab it
+                // means a fetch; otherwise let go rather than grinding against
+                // whatever sits between the pet and the ball's resting spot.
+                let distance = (ball.position - pet.position).length
+                if distance <= 40 {
+                    pet.activity = .fetching
+                } else {
+                    pet.activity = .idle
+                    pet.animationClock = 0
                 }
             } else {
                 pet.activity = .idle
