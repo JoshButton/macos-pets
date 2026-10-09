@@ -216,6 +216,11 @@ final class AppController: NSObject, NSApplicationDelegate {
         throwItem.target = self
         menu.addItem(throwItem)
 
+        let placeItem = NSMenuItem(title: "Place Ball at Cursor", action: #selector(placeBallAction), keyEquivalent: "")
+        placeItem.target = self
+        placeItem.toolTip = "The menu closes and the ball follows your cursor until you press to grab it."
+        menu.addItem(placeItem)
+
         let addItem = NSMenuItem(title: "Add Pet", action: nil, keyEquivalent: "")
         let submenu = NSMenu()
         for species in PetCatalogue.all {
@@ -267,6 +272,13 @@ final class AppController: NSObject, NSApplicationDelegate {
         world.removeAll()
     }
 
+    @objc private func placeBallAction() {
+        // Arm placement mode: the menu closes on this click and the ball
+        // starts riding the cursor (see pollMouse). The next press grabs it.
+        draggingBall = false
+        placingBall = true
+    }
+
     @objc private func throwBallAction() {
         let index = layout.mouseDisplayIndex ?? 0
         guard layout.rects.indices.contains(index) else { return }
@@ -295,11 +307,33 @@ final class AppController: NSObject, NSApplicationDelegate {
 
     private var lastMouse = PetPoint.zero
 
+    /// Armed by "Place Ball at Cursor": the menu has closed and the ball now
+    /// follows the pointer until the next press grabs it for a throw.
+    private var placingBall = false
+
     private func pollMouse() {
         let p = NSEvent.mouseLocation
         let now = PetPoint(x: p.x, y: p.y)
         let moved = now.distance(to: lastMouse) > 0.5
         let buttons = NSEvent.pressedMouseButtons
+
+        if placingBall {
+            // Preview: the ball rides the cursor so the user sees what the
+            // next press will grab.
+            ball.state = .held
+            ball.velocity = .zero
+            ball.position = now
+            if buttons & 1 != 0 {
+                placingBall = false
+                draggingBall = true
+                dragOffset = .zero
+                lastDragPoint = now
+                lastDragTime = CACurrentMediaTime()
+                dragVelocity = .zero
+            }
+            lastMouse = now
+            return
+        }
 
         if buttons & 1 != 0 {
             if !draggingBall {
