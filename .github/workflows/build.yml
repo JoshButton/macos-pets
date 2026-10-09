@@ -1,10 +1,25 @@
 name: build
 
 on:
+  # Only run when build inputs change: docs, licences, and repo meta don't
+  # need a 15-minute macOS runner. Tags bypass path filters, so `v*` tags
+  # always run the release job even if the tagged commit is docs-only.
   push:
     tags:
       - "v*"
+    paths:
+      - "Sources/**"
+      - "Package.swift"
+      - "Assets/**"
+      - "install.sh"
+      - ".github/workflows/**"
   pull_request:
+    paths:
+      - "Sources/**"
+      - "Package.swift"
+      - "Assets/**"
+      - "install.sh"
+      - ".github/workflows/**"
 
 jobs:
   build:
