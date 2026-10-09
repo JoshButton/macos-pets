@@ -58,6 +58,60 @@ final class AppController: NSObject, NSApplicationDelegate {
         resetBall()
     }
 
+    // MARK: - Remote commands (CLI / Raycast script commands)
+
+    /// Drains queued CLI/Raycast commands. Called from the tick (every ~0.5s)
+    /// rather than via a file watcher, so there is no extra lifetime to
+    /// manage and it works identically in every sandbox.
+    private var tickCount = 0
+
+    private func drainCommandQueue() {
+        tickCount += 1
+        guard tickCount % 30 == 0 else { return }
+        for command in PetCommand.drainQueue() {
+            handleCommand(command)
+        }
+    }
+
+    func handleCommand(_ command: PetCommand) {
+        switch command {
+        case .add(let id):
+            guard let species = PetCatalogue.species(id: id) else { return }
+            world.spawn(species, on: layout.mouseDisplayIndex ?? 0)
+        case .addRandom:
+            guard let species = PetCatalogue.all.randomElement() else { return }
+            world.spawn(species, on: layout.mouseDisplayIndex ?? 0)
+        case .removeLast:
+            _ = world.pets.popLast()
+        case .clear:
+            world.removeAll()
+        case .throwBall:
+            throwBallAction()
+        case .placeBall:
+            placeBallAction()
+        case .hide:
+            setPetsHidden(true)
+        case .show:
+            setPetsHidden(false)
+        case .toggleHidden:
+            setPetsHidden(!petsHidden)
+        }
+    }
+
+    private var petsHidden = false
+
+    /// Hides every overlay window (pets and ball) while the app keeps
+    /// running; `show` brings them back.
+    func setPetsHidden(_ hidden: Bool) {
+        petsHidden = hidden
+        if hidden {
+            for w in windows { w.orderOut(nil) }
+        } else {
+            rebuildWindowsIfNeeded()
+            for w in windows { w.orderFrontRegardless() }
+        }
+    }
+
     private func buildWindows() {
         for w in windows { w.orderOut(nil) }
         windows.removeAll()
@@ -104,6 +158,7 @@ final class AppController: NSObject, NSApplicationDelegate {
         lastTickTime = now
 
         rebuildWindowsIfNeeded()
+        drainCommandQueue()
 
         if !draggingBall {
             ballPhysics.step(&ball, dt: dt, displays: layout.rects)

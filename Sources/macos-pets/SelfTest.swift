@@ -53,6 +53,7 @@ enum SelfTest {
         testCatchHidesBall()
         testSecondPetStandsDown()
         testFrameDurationsHonored()
+        testCommandRoundTrip()
         testSpritePalettesResolve()
         testGifAssetsResolve()
 
@@ -307,8 +308,61 @@ enum SelfTest {
         testCatchHidesBall()
         testSecondPetStandsDown()
         testFrameDurationsHonored()
+        testCommandRoundTrip()
         testSpritePalettesResolve()
         testGifAssetsResolve()
+    }
+
+    /// Every command survives file encoding, CLI spelling, and back —
+    /// otherwise Raycast scripts would silently misfire. Also exercises the
+    /// real queue directory round-trip through a temp dir.
+    private static func testCommandRoundTrip() {
+        let cases: [(PetCommand, [String])] = [
+            (.add(speciesID: "dog-black"), ["add", "dog-black"]),
+            (.addRandom, ["add-random"]),
+            (.removeLast, ["remove-last"]),
+            (.clear, ["clear"]),
+            (.throwBall, ["throw"]),
+            (.placeBall, ["place"]),
+            (.hide, ["hide"]),
+            (.show, ["show"]),
+            (.toggleHidden, ["toggle"]),
+        ]
+        for (command, cli) in cases {
+            let parsed = PetCommand.parse(notificationName: command.notificationName)
+            expect(parsed == command, "\(command.notificationName) parses back to \(command)")
+            let fromCLI = PetCommand(cliParts: cli)
+            expect(fromCLI == command, "CLI \(cli.joined(separator: " ")) maps to \(command)")
+        }
+        // Every catalogue species must be addressable by its id.
+        for species in PetCatalogue.all {
+            let cmd = PetCommand(cliParts: ["add", species.id])
+            expect(cmd == .add(speciesID: species.id), "species \(species.id) is addable via CLI")
+        }
+        expect(PetCommand.parse(notificationName: "com.apple.something") == nil, "foreign notifications ignored")
+        expect(PetCommand.parse(notificationName: "dev.local.macos-pets.cmd.frobnicate") == nil, "unknown actions ignored")
+        expect(PetCommand(cliParts: []) == nil, "empty CLI rejected")
+        expect(PetCommand(cliParts: ["add"]) == nil, "bare add rejected")
+
+        // File encoding round-trips through the real queue drain.
+        for (command, _) in cases {
+            guard let back = PetCommand(fileLine: command.fileLine) else {
+                expect(false, "\(command.fileLine) parses back")
+                continue
+            }
+            expect(back == command, "\(command.fileLine) round-trips through a command file")
+        }
+        let tmp = FileManager.default.temporaryDirectory
+            .appendingPathComponent("macos-pets-q-\(ProcessInfo.processInfo.processIdentifier)", isDirectory: true)
+        try? FileManager.default.removeItem(at: tmp)
+        try? FileManager.default.createDirectory(at: tmp, withIntermediateDirectories: true)
+        try? "throw\n".write(to: tmp.appendingPathComponent("1.cmd"), atomically: true, encoding: .utf8)
+        try? "add crab\nadd dog-black\ngarbage line here\n".write(to: tmp.appendingPathComponent("2.cmd"), atomically: true, encoding: .utf8)
+        let drained = PetCommand.drainQueue(at: tmp)
+        expect(drained == [.throwBall, .add(speciesID: "crab"), .add(speciesID: "dog-black")], "queue drains in order, skipping garbage")
+        expect(PetCommand.drainQueue(at: tmp).isEmpty, "drain removes the files")
+        expect(PetCommand.drainQueue(at: tmp.appendingPathComponent("missing")).isEmpty, "missing queue dir drains empty")
+        try? FileManager.default.removeItem(at: tmp)
     }
 
     /// Frames advance on authored GIF delays, not a flat 8fps. Turtle walk is

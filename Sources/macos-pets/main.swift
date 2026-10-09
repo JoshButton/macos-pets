@@ -9,6 +9,36 @@ import MacOSPetsKit
 
 let args = CommandLine.arguments
 
+// `macos-pets send <command> [arg]` queues a command file for the running
+// app and exits. Plain file I/O: nothing to flush, safe to exit at once.
+if let sendIndex = args.firstIndex(of: "send") {
+    let parts = Array(args.dropFirst(sendIndex + 1))
+    guard let command = PetCommand(cliParts: parts) else {
+        fputs("usage: macos-pets send add <species-id> | add-random | remove-last | clear | throw | place | hide | show | toggle\n", stderr)
+        exit(2)
+    }
+    do {
+        let dir = PetCommand.queueDirectory()
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let name = String(format: "%ld-%d.cmd", Int(Date().timeIntervalSince1970 * 1000), ProcessInfo.processInfo.processIdentifier)
+        try (command.fileLine + "\n").write(
+            to: dir.appendingPathComponent(name),
+            atomically: true, encoding: .utf8
+        )
+    } catch {
+        fputs("could not queue command: \(error)\n", stderr)
+        exit(1)
+    }
+    exit(0)
+}
+
+if args.contains("--list-species") {
+    for species in PetCatalogue.all {
+        print("\(species.id)|\(species.name)")
+    }
+    exit(0)
+}
+
 if args.contains("--selftest") {
     exit(SelfTest.run() ? 0 : 1)
 }

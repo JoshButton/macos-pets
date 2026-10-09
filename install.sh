@@ -72,7 +72,7 @@ PLIST
 cat > /tmp/macos-pets-icon.swift <<'SWIFT'
 import AppKit
 let size = 512
-let image = NSImage(size: NSPoint(width: size, height: size))
+let image = NSImage(size: NSSize(width: size, height: size))
 image.lockFocus()
 NSColor.clear.setFill()
 NSRect(x: 0, y: 0, width: size, height: size).fill()
@@ -110,3 +110,41 @@ else
     echo "Run it with:  open '$DEST'"
 fi
 echo "Verify with:  ./.build/release/macos-pets --selftest"
+
+# `--raycast-scripts [dir]` writes Raycast Script Commands (one per action)
+# that drive the running app through the same `send` channel.
+if [ "${1:-}" = "--raycast-scripts" ] || [ "${3:-}" = "--raycast-scripts" ]; then
+    SCRIPT_DIR="${2:-$HOME/.config/raycast/scripts}"
+    # allow `--bundle-only DIR --raycast-scripts [DIR]` ordering
+    if [ "${1:-}" != "--raycast-scripts" ] && [ "${3:-}" = "--raycast-scripts" ]; then
+        SCRIPT_DIR="${4:-$HOME/.config/raycast/scripts}"
+    fi
+    BIN="$DEST/Contents/MacOS/macos-pets"
+    mkdir -p "$SCRIPT_DIR"
+    write_script() {
+        # $1 filename, $2 title, $3 command, $4 mode
+        cat > "$SCRIPT_DIR/$1" <<EOF
+#!/bin/bash
+# @raycast.schemaVersion 1
+# @raycast.title $2
+# @raycast.mode $4
+# @raycast.packageName macOS Pets
+exec "$BIN" send $3
+EOF
+        chmod +x "$SCRIPT_DIR/$1"
+    }
+    # Per-species add scripts from the live catalogue.
+    "$DEST/Contents/MacOS/macos-pets" --list-species 2>/dev/null | while IFS='|' read -r id name; do
+        [ -z "$id" ] && continue
+        slug=$(echo "$id" | tr ' ' '-')
+        write_script "add-pet-$slug.sh" "Add $name" "add $id" silent
+    done
+    write_script "add-random-pet.sh" "Add Random Pet" "add-random" silent
+    write_script "remove-last-pet.sh" "Remove Last Pet" "remove-last" silent
+    write_script "clear-pets.sh" "Clear All Pets" "clear" silent
+    write_script "throw-ball.sh" "Throw Ball" "throw" silent
+    write_script "place-ball.sh" "Place Ball at Cursor" "place" silent
+    write_script "hide-pets.sh" "Hide Pets" "hide" silent
+    write_script "show-pets.sh" "Show Pets" "show" silent
+    echo "==> Raycast scripts written to $SCRIPT_DIR"
+fi
