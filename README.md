@@ -9,13 +9,27 @@ else, so they appear over Zed, a browser, or a full-screen app.
 
 ## Install
 
+Requires macOS 13+ and a Swift toolchain (Command Line Tools are enough).
+
 ```bash
+git clone <your-repo-url> macos-pets
+cd macos-pets
 ./install.sh
 open "/Applications/macOS Pets.app"
 ```
 
 It installs a menubar-only app (no Dock icon). Look for the paw icon in the
 menu bar.
+
+> First launch: the app is ad-hoc signed, so Gatekeeper may refuse to open it.
+> Right-click it in Finder → Open → Open to allow it once.
+
+## Sharing
+
+Push this directory to a Git repo; GitHub Actions (`.github/workflows/build.yml`)
+builds, runs all checks, and uploads the `.app` bundle as an artifact on every
+push. Colleagues can either run `./install.sh` themselves or grab the bundle
+from the workflow run.
 
 ## Using it
 

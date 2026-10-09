@@ -11,6 +11,14 @@ cd "$(dirname "$0")"
 APP_NAME="macOS Pets"
 DEST="/Applications/${APP_NAME}.app"
 
+# `--bundle-only [dir]` assembles the .app without touching /Applications.
+# Used by CI to produce an uploadable artifact.
+BUNDLE_ONLY=0
+if [ "${1:-}" = "--bundle-only" ]; then
+    BUNDLE_ONLY=1
+    DEST="${2:-./dist}/${APP_NAME}.app"
+fi
+
 echo "==> Building release binary"
 swift build -c release
 
@@ -94,7 +102,11 @@ fi
 # Ad-hoc signature so Gatekeeper lets a locally built app run.
 codesign --force --deep --sign - "$DEST" 2>/dev/null || echo "  (codesign skipped)"
 
-echo "==> Installed to $DEST"
-echo
-echo "Run it with:  open '$DEST'"
+if [ "$BUNDLE_ONLY" = "1" ]; then
+    echo "==> Bundle assembled at $DEST (not installed)"
+else
+    echo "==> Installed to $DEST"
+    echo
+    echo "Run it with:  open '$DEST'"
+fi
 echo "Verify with:  ./.build/release/macos-pets --selftest"

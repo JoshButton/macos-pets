@@ -1,0 +1,38 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check upstream artwork intact
+        run: |
+          test -f Assets/vscode-pets/ATTRIBUTION.md
+          test -f Assets/vscode-pets/LICENSE.upstream
+          test "$(find Assets/vscode-pets/media -name '*_8fps.gif' | wc -l)" -ge 360
+
+      - name: Build (debug)
+        run: swift build 2>&1 | tail -3
+
+      - name: Behavioural checks
+        run: ./.build/debug/macos-pets --selftest
+
+      - name: Regression-detection checks
+        run: ./.build/debug/macos-pets --selftest --verify-catches
+
+      - name: Render check (offscreen)
+        run: ./.build/debug/macos-pets --render-check
+
+      - name: Assemble .app bundle
+        run: ./install.sh --bundle-only ./dist
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: macOS-Pets-app
+          path: dist/macOS Pets.app
