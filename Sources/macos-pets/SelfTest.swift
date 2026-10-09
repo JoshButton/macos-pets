@@ -51,6 +51,7 @@ enum SelfTest {
         testChaseEndsWhenBallRests()
         testCatchHidesBall()
         testSecondPetStandsDown()
+        testFrameDurationsHonored()
         testSpritePalettesResolve()
         testGifAssetsResolve()
 
@@ -303,8 +304,37 @@ enum SelfTest {
         testChaseEndsWhenBallRests()
         testCatchHidesBall()
         testSecondPetStandsDown()
+        testFrameDurationsHonored()
         testSpritePalettesResolve()
         testGifAssetsResolve()
+    }
+
+    /// Frames advance on authored GIF delays, not a flat 8fps. Turtle walk is
+    /// 1s/frame and crab carry 260ms/frame; playing those at 8fps blurs slow
+    /// leg cycles into a slide. This is the "pets slide while parading" fix.
+    private static func testFrameDurationsHonored() {
+        guard let turtle = GifFrameStore.shared.entry(forRelativePath: "media/turtle/green_walk_8fps.gif") else {
+            expect(false, "turtle walk GIF loads")
+            return
+        }
+        expect(turtle.durations.allSatisfy { abs($0 - 1.0) < 0.05 }, "turtle walk frames last ~1s (\(turtle.durations.prefix(2)))")
+        expect(turtle.frameIndex(at: 0.5) == 0, "turtle still on frame 0 halfway through its first second")
+        expect(turtle.frameIndex(at: 1.5) == 1, "turtle advances one frame per second")
+
+        guard let dog = GifFrameStore.shared.entry(forRelativePath: "media/dog/black_walk_8fps.gif") else {
+            expect(false, "dog walk GIF loads")
+            return
+        }
+        expect(dog.durations.allSatisfy { abs($0 - 0.13) < 0.03 }, "dog walk frames last ~130ms (\(dog.durations.prefix(2)))")
+        expect(dog.frameIndex(at: 0.0) == 0, "dog starts on frame 0")
+        expect(dog.frameIndex(at: 0.2) == 1, "dog advances to frame 1 after one 130ms delay")
+        expect(dog.frameIndex(at: dog.totalDuration + 0.05) == 0, "dog loops back to frame 0")
+
+        guard let crab = GifFrameStore.shared.entry(forRelativePath: "media/crab/red_with_ball_8fps.gif") else {
+            expect(false, "crab carry GIF loads")
+            return
+        }
+        expect(abs(crab.totalDuration - 0.78) < 0.05, "crab carry loop is ~0.78s, not 3/8s (\(crab.totalDuration))")
     }
 
     /// Catching hides the free ball (upstream hides the ball canvas): the

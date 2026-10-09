@@ -17,7 +17,26 @@ final class GifFrameStore {
         /// pixels. Used to sit feet exactly on the floor despite transparent
         /// padding varying per species and per frame.
         let bottomInsets: [CGFloat]
+        /// Authored per-frame durations in seconds. GIFs vary wildly (turtle
+        /// walk is 1s/frame, dog walk 130ms); playing everything at a flat
+        /// 8fps turns slow cycles into a leg-blur that reads as sliding.
+        let durations: [Double]
         let size: CGSize
+
+        /// Total loop duration in seconds.
+        var totalDuration: Double { durations.reduce(0, +) }
+
+        /// Frame index for an animation clock, honoring authored delays.
+        func frameIndex(at clock: Double) -> Int {
+            guard !frames.isEmpty, totalDuration > 0 else { return 0 }
+            var t = clock.truncatingRemainder(dividingBy: totalDuration)
+            if t < 0 { t += totalDuration }
+            for (i, d) in durations.enumerated() {
+                t -= d
+                if t < 0 { return i }
+            }
+            return frames.count - 1
+        }
     }
 
     private var cache: [String: Entry] = [:]
@@ -58,8 +77,7 @@ final class GifFrameStore {
         guard let gif = species.gif, let rel = gif.relativePath(for: pose) else { return nil }
         guard let entry = entry(forRelativePath: rel) else { return nil }
         guard !entry.frames.isEmpty else { return nil }
-        // GIFs are authored at 8fps; cycle on the animation clock.
-        let idx = Int(clock * 8.0) % entry.frames.count
+        let idx = entry.frameIndex(at: clock)
         return (entry.frames[idx], entry.bottomInsets[idx], entry.size)
     }
 
@@ -73,18 +91,34 @@ final class GifFrameStore {
         guard count > 0 else { return nil }
         var frames: [CGImage] = []
         var insets: [CGFloat] = []
+        var durations: [Double] = []
         var size = CGSize.zero
         for i in 0..<count {
             guard let img = CGImageSourceCreateImageAtIndex(src, i, nil) else { continue }
             frames.append(img)
             if i == 0 { size = CGSize(width: img.width, height: img.height) }
             insets.append(Self.bottomInset(of: img))
+            durations.append(Self.frameDuration(of: src, index: i))
         }
-        let entry = Entry(frames: frames, bottomInsets: insets, size: size)
+        let entry = Entry(frames: frames, bottomInsets: insets, durations: durations, size: size)
         lock.lock()
         cache[rel] = entry
         lock.unlock()
         return entry
+    }
+
+    /// Authored display duration of one GIF frame in seconds, per the GIF
+    /// graphic control extension. Falls back to 0.1s for missing/bogus values,
+    /// matching browser behaviour for degenerate delays.
+    static func frameDuration(of src: CGImageSource, index: Int) -> Double {
+        guard let props = CGImageSourceCopyPropertiesAtIndex(src, index, nil) as? [CFString: Any],
+              let gif = props[kCGImagePropertyGIFDictionary] as? [CFString: Any] else {
+            return 0.1
+        }
+        let unclamped = (gif[kCGImagePropertyGIFUnclampedDelayTime] as? Double) ?? 0
+        let clamped = (gif[kCGImagePropertyGIFDelayTime] as? Double) ?? 0
+        let d = unclamped > 0 ? unclamped : clamped
+        return d > 0.001 ? d : 0.1
     }
 
     /// Distance in image pixels from the image bottom to the lowest opaque row.
