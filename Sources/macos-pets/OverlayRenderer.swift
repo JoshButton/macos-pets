@@ -29,7 +29,6 @@ struct OverlayRenderer {
     ) {
         context.clear(view.bounds)
 
-        let width = CGFloat(viewSize.width)
         let height = CGFloat(viewSize.height)
 
         // Global (y-up) point -> view-local (y-down) point.

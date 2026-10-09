@@ -89,7 +89,7 @@ enum SelfTest {
 
     private static func testBallBouncesOffFloor() {
         var ball = Ball(position: PetPoint(x: 500, y: 400))
-        var physics = BallPhysics()
+        let physics = BallPhysics()
         var minY = Double.greatestFiniteMagnitude
         var rested = false
         for _ in 0..<1200 {
@@ -177,7 +177,7 @@ enum SelfTest {
 
     private static func testBallEventuallySettles() {
         var ball = Ball(position: PetPoint(x: 500, y: 600))
-        var physics = BallPhysics()
+        let physics = BallPhysics()
         var settled = false
         for _ in 0..<1200 {
             let awake = physics.step(&ball, dt: 1.0 / 60.0, displays: singleDisplay())
@@ -850,7 +850,7 @@ private static func testBallUsesCorrectFloorOnOffsetDisplay() {
 
 private static func testBallNeverLeavesDesktopBounds() {
     let displays = lShapedDisplays()
-    var physics = BallPhysics()
+    let physics = BallPhysics()
 
     // Throw from many positions and directions; the ball must never end up
     // outside the bounding box of the whole desktop.
