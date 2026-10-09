@@ -106,6 +106,9 @@ public struct PetWorld: Sendable {
     public var climbChance: Double = 0.5
     /// Vertical speed while wall-climbing, points per second.
     public var climbSpeed: Double = 45
+    /// Vertical speed at which walking pets settle onto a new floor height,
+    /// points per second. Fast enough to track monitor steps without popping.
+    public var verticalEase: Double = 160
 
     /// Test hook: when false, pets never target another display, reproducing
     /// the original "pets can't move between monitors" bug.
@@ -212,72 +215,33 @@ public struct PetWorld: Sendable {
             }
 
         case .walking(let target):
-            let targetDisplayIndex = displays.firstIndex { $0.contains(target) }
-            let wantsOtherDisplay = targetDisplayIndex != nil && targetDisplayIndex != pet.displayIndex
+            // Pets walk continuously in global space: internal monitor seams
+            // are simply walked across pixel by pixel (display follows by
+            // containment, height eases over offset steps). Only the outer
+            // desktop walls block, handled at the end of stepPet.
+            let toTarget = target - pet.position
+            if abs(toTarget.x) > 2 { pet.facing = toTarget.x > 0 ? 1 : -1 }
 
-            if wantsOtherDisplay, let targetDisplayIndex, displays.indices.contains(targetDisplayIndex) {
-                // Walk up to the edge of the current display, then step across
-                // onto the neighbour. Teleporting to the far end of the other
-                // screen would look like the pet teleported, so it only crosses
-                // when it has actually reached the shared boundary.
-                let goingRight = target.x > pet.position.x
-                let current = displays[pet.displayIndex]
-                let half = max(12.0, pet.species.footprintWidth / 2)
-                let edge = goingRight ? current.maxX - half : current.minX + half
-
-                if abs(pet.position.x - edge) < 6 {
-                    let newDisplay = displays[targetDisplayIndex]
-                    // Step onto the neighbour at the shared seam — unless the
-                    // target sits inside the clamp dead-zone around the seam,
-                    // in which case neither side could ever arrive and the pet
-                    // would ping-pong across forever. Retarget instead.
-                    let entryX = goingRight
-                        ? max(newDisplay.minX + half, current.maxX - half)
-                        : min(newDisplay.maxX - half, current.minX + half)
-                    if abs(target.x - entryX) <= half + 8 {
-                        pet.activity = decideNextActivity(pet: pet, display: display, cursor: cursor)
-                        pet.animationClock = 0
-                    } else {
-                        pet.displayIndex = targetDisplayIndex
-                        pet.position = PetPoint(x: entryX, y: newDisplay.minY + groundInset)
-                        pet.facing = goingRight ? 1 : -1
-                    }
-                } else {
-                    // Face the edge being walked toward, otherwise the pet
-                    // moonwalks when the goal is behind its current facing.
-                    pet.facing = goingRight ? 1 : -1
-                    move(&pet, toward: PetPoint(x: edge, y: current.minY + groundInset),
-                         speed: baseSpeed * (0.5 + pet.species.energy * 0.9), dt: dt, display: current)
-                }
+            if abs(toTarget.x) <= 3 {
+                pet.activity = decideNextActivity(pet: pet, display: display, cursor: cursor)
             } else {
-                let toTarget = target - pet.position
-                if abs(toTarget.x) > 2 { pet.facing = toTarget.x > 0 ? 1 : -1 }
-
-                if abs(toTarget.x) <= 3 {
-                    pet.activity = decideNextActivity(pet: pet, display: display, cursor: cursor)
-                } else {
-                    let running = abs(toTarget.x) > 400
-                    move(&pet, toward: target, speed: baseSpeed * (0.5 + pet.species.energy * 0.9) * (running ? 2.1 : 1), dt: dt, display: display)
-                }
-                // Blocked-edge handling lives at the end of stepPet, after
-                // clamping: only post-clamp positions reveal that no progress
-                // was possible. (Checking here would compare pre-clamp values
-                // and always see phantom progress.)
+                let running = abs(toTarget.x) > 400
+                move(&pet, toward: target, speed: baseSpeed * (0.5 + pet.species.energy * 0.9) * (running ? 2.1 : 1), dt: dt, display: display)
             }
+            // Blocked-edge handling lives at the end of stepPet, after
+            // clamping: only post-clamp positions reveal that no progress
+            // was possible. (Checking here would compare pre-clamp values
+            // and always see phantom progress.)
 
         case .fetching:
-            // Head back toward the centre of the display, ball in mouth.
-            let home = PetPoint(x: display.midX, y: display.minY + groundInset)
+            // Parade the catch home to the middle of the current display.
+            // Home is always interior, so unlike walking this cannot grind.
+            let home = PetPoint(x: display.midX, y: pet.position.y)
             let toHome = home - pet.position
-            let before = pet.position.x
             if abs(toHome.x) > 4 {
                 pet.facing = toHome.x > 0 ? 1 : -1
                 move(&pet, toward: home, speed: baseSpeed * 1.2, dt: dt, display: display)
             } else {
-                pet.activity = .sitting
-                pet.animationClock = 0
-            }
-            if abs(pet.position.x - before) < 0.01 {
                 pet.activity = .sitting
                 pet.animationClock = 0
             }
@@ -339,29 +303,41 @@ public struct PetWorld: Sendable {
             }
         }
 
-        // Keep the pet inside whichever display it now belongs to. Airborne
-        // pets (climbing) manage their own Y, so only clamp their X.
+        // Follow the floor pixel by pixel: adopt whichever display contains the
+        // pet's feet, and ease Y toward its floor instead of snapping. On
+        // vertically offset monitors this walks the step diagonally, one
+        // pixel at a time, rather than teleporting across it.
+        if let idx = displays.firstIndex(where: { $0.contains(pet.position) }) {
+            pet.displayIndex = idx
+        }
         if displays.indices.contains(pet.displayIndex) {
+            let display = displays[pet.displayIndex]
             if pet.isAirborne {
-                clampXToDisplay(&pet, display: displays[pet.displayIndex])
+                clampXToDisplay(&pet, display: display)
             } else {
-                clampToDisplay(&pet, display: displays[pet.displayIndex])
+                // Outer desktop walls only: internal seams are walkable.
+                clampXToDesktop(&pet, displays: displays)
+                // Ease toward the floor beneath the pet's x position, which
+                // may belong to a neighbouring offset monitor. This walks
+                // height steps diagonally, pixel by pixel, instead of
+                // teleporting — and stops pets strolling through the void
+                // under a taller display.
+                let floorY = floorBeneath(x: pet.position.x, nearY: pet.position.y, displays: displays, groundInset: groundInset)
+                    ?? (display.minY + groundInset)
+                let maxStep = verticalEase * dt
+                let dy = floorY - pet.position.y
+                pet.position.y += min(max(dy, -maxStep), maxStep)
             }
         }
 
-        // Blocked-edge handling, evaluated on post-clamp positions. A pet
-        // still far from its walking target that made no progress this tick
-        // is grinding against an edge it cannot pass (its goal sits inside
-        // the clamp dead-zone, or a wall). Retarget rather than grind.
-        // Crossing to another display is handled by the wantsOtherDisplay
-        // branch above, which walks to the seam first; crossing from here
-        // would ping-pong across internal seams.
+        // Blocked handling, evaluated on post-clamp positions: a pet still
+        // far from its walking target that made no progress this tick is
+        // grinding against an outer desktop wall. Climbers scale it instead
+        // of turning around (upstream: cat/totoro climbWallLeft).
         if case .walking(let target) = pet.activity,
            abs(target.x - pet.position.x) > 3,
            abs(pet.position.x - tickStartX) < 0.01 {
             let display = displays[pet.displayIndex]
-            // At an *outer* desktop wall, climbers scale it instead of
-            // turning around (upstream: cat/totoro climbWallLeft).
             if pet.species.canClimb,
                !hasAdjacentDisplay(from: pet, displays: displays),
                rng.nextDouble(in: 0...1) < climbChance {
@@ -423,20 +399,14 @@ public struct PetWorld: Sendable {
         return .walking(to: target)
     }
 
+    /// Advances the pet horizontally toward the target. Y is never touched
+    /// here: the end of stepPet eases it toward the local floor, which is
+    /// what makes height steps between offset monitors smooth.
     private mutating func move(_ pet: inout Pet, toward target: PetPoint, speed: Double, dt: Double, display: PetRect) {
-        let delta = target - pet.position
-        let distance = delta.length
-        guard distance > 0.0001 else { return }
-        let step = min(speed * dt, distance)
-        pet.position = pet.position + (delta * (1 / distance) * step)
-        // Stay on the floor of whichever display the pet currently occupies.
-        // The floor height differs between monitors, so this must follow
-        // `pet.displayIndex` rather than a display passed in by the caller.
-        if displays.indices.contains(pet.displayIndex) {
-            pet.position.y = displays[pet.displayIndex].minY + groundInset
-        } else {
-            pet.position.y = display.minY + groundInset
-        }
+        let dx = target.x - pet.position.x
+        guard abs(dx) > 0.0001 else { return }
+        let step = min(speed * dt, abs(dx))
+        pet.position.x += dx > 0 ? step : -step
     }
 
     /// Clamps only the horizontal position, for airborne pets that manage Y.
@@ -447,16 +417,14 @@ public struct PetWorld: Sendable {
         pet.position.x = min(max(pet.position.x, lower), upper)
     }
 
-    /// Keeps a pet inside the display it currently belongs to. The margin is
-    /// half the pet's on-screen footprint so wide sprites (crab ≈107pt) stay
-    /// fully on screen instead of overhanging the edge.
-    private func clampToDisplay(_ pet: inout Pet, display: PetRect) {
+    /// Clamps horizontally to the whole desktop arrangement, so internal
+    /// monitor seams stay walkable and only the outer walls block.
+    private func clampXToDesktop(_ pet: inout Pet, displays: [PetRect]) {
+        guard let bounds = DesktopBounds(displays) else { return }
         let margin = max(12.0, pet.species.footprintWidth / 2)
-        // Monitors can be narrower than 2*margin; never invert the range.
-        let lower = display.minX + margin
-        let upper = max(display.maxX - margin, lower)
+        let lower = bounds.minX + margin
+        let upper = max(bounds.maxX - margin, lower)
         pet.position.x = min(max(pet.position.x, lower), upper)
-        pet.position.y = display.minY + groundInset
     }
 }
 
@@ -473,6 +441,23 @@ func hasAdjacentDisplay(from pet: Pet, displays: [PetRect]) -> Bool {
         if gap >= -8.0, gap <= 8.0 { return true }
     }
     return false
+}
+
+/// Floor height under a given x position: the nearest floor among displays
+/// whose horizontal span contains x. Nil when x is past every display (outer
+/// void), in which case the caller keeps the current floor.
+func floorBeneath(x: Double, nearY: Double, displays: [PetRect], groundInset: Double) -> Double? {
+    var best: Double?
+    var bestDistance = Double.greatestFiniteMagnitude
+    for d in displays where d.horizontallyContains(x) {
+        let floorY = d.minY + groundInset
+        let distance = abs(floorY - nearY)
+        if distance < bestDistance {
+            bestDistance = distance
+            best = floorY
+        }
+    }
+    return best
 }
 
 // MARK: - Deterministic RNG

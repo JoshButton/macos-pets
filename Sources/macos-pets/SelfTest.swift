@@ -44,6 +44,7 @@ enum SelfTest {
         testPetRetargetsFromSeamDeadZone()
         testPetTurnsAtOuterWall()
         testPetFacesMovementDirection()
+        testSeamCrossingIsContinuous()
         testChaseUsesRunPose()
         testCarryArtResolves()
         testTotoroClimbsOuterWall()
@@ -297,6 +298,7 @@ enum SelfTest {
         testPetRetargetsFromSeamDeadZone()
         testPetTurnsAtOuterWall()
         testPetFacesMovementDirection()
+        testSeamCrossingIsContinuous()
         testChaseUsesRunPose()
         testCarryArtResolves()
         testTotoroClimbsOuterWall()
@@ -419,11 +421,11 @@ enum SelfTest {
         if case .chasing = farActivity { stillChasing = true } else { stillChasing = false }
         expect(!stillChasing, "chase ends when the ball rests far away (now \(farActivity))")
         // Whatever it did instead (wander, possibly across the seam), it
-        // must be inside a display, not wedged past an edge.
-        let d = displays[world.pets[0].displayIndex]
+        // must be inside the desktop, not wedged past an edge.
+        let desk = DesktopBounds(displays)!
         expect(
-            world.pets[0].position.x >= d.minX && world.pets[0].position.x <= d.maxX,
-            "pet stays inside a display after giving up the chase"
+            world.pets[0].position.x >= desk.minX && world.pets[0].position.x <= desk.maxX,
+            "pet stays inside the desktop after giving up the chase"
         )
 
         // Right next to the resting ball: it should pick it up instead.
@@ -581,6 +583,43 @@ enum SelfTest {
             world.pets[0].position.x >= display.minX && world.pets[0].position.x <= display.maxX,
             "pet remains inside the display after hitting the outer wall"
         )
+    }
+
+    /// Crossing an offset seam is continuous: no tick moves the pet more than
+    /// a few points, and its height ramps between the two floors instead of
+    /// snapping (the old teleport hop).
+    private static func testSeamCrossingIsContinuous() {
+        let displays = lShapedDisplays() // external offset +56
+        var world = PetWorld(displays: displays, seed: 77)
+        let species = PetCatalogue.species(id: "duck")!
+        world.pets.append(Pet(
+            species: species,
+            position: PetPoint(x: 1300, y: 6),
+            displayIndex: 0, facing: 1
+        ))
+        world.pets[0].activity = .walking(to: PetPoint(x: 1700, y: 62))
+
+        var maxStep = 0.0
+        var crossed = false
+        // Sample heights while straddling the seam (x near 1512), whatever
+        // displayIndex says: containment only flips once y reaches 56, but
+        // the ramp starts as soon as the x-column changes floor.
+        var yAtCross: [Double] = []
+        for _ in 0..<3000 {
+            let before = world.pets[0].position
+            world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: nil)
+            let after = world.pets[0].position
+            maxStep = max(maxStep, before.distance(to: after))
+            if world.pets[0].displayIndex == 1 { crossed = true }
+            if after.x > 1490, after.x < 1560 { yAtCross.append(after.y) }
+            // Once across and settled, stop.
+            if crossed, abs(after.y - 62) < 1.0, after.x > 1600 { break }
+        }
+        expect(crossed, "pet walks across the offset seam")
+        expect(maxStep < 5.0, "no teleport hop while crossing (max single-tick move \(String(format: "%.2f", maxStep))pt)")
+        // Height must visit the middle of the step, proving a ramp.
+        let midVisit = yAtCross.contains { $0 > 10 && $0 < 58 }
+        expect(midVisit, "pet ramps through intermediate heights while crossing")
     }
 
     /// While walking toward an edge on another display, the pet faces its
@@ -780,13 +819,15 @@ private static func testPetsCrossBetweenDisplaysOverTime() {
         // miss behaviour that cycles, and every pet may share one pose by
         // chance at that moment.
         var observedPoses = Set<String>()
+        // Pets roam the whole desktop now (seams are walkable), so bounds
+        // are the desktop union, not any single display.
+        let desktop = DesktopBounds(displays)!
         for step in 0..<3600 {
             world.step(dt: 1.0 / 60.0, ball: &SelfTestNoBall.value, cursor: PetPoint(x: 500, y: 400))
             for pet in world.pets {
                 observedPoses.insert("\(pet.species.id):\(pet.pose.rawValue)")
-                let display = displays[pet.displayIndex]
-                if pet.position.x < display.minX - 1 || pet.position.x > display.maxX + 1 {
-                    expect(false, "pet \(pet.species.name) escaped its display at step \(step)")
+                if pet.position.x < desktop.minX - 1 || pet.position.x > desktop.maxX + 1 {
+                    expect(false, "pet \(pet.species.name) escaped the desktop at step \(step)")
                     return
                 }
             }
