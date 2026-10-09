@@ -169,8 +169,10 @@ EOF
     echo
     echo "    Raycast cannot register script folders itself — one manual step:"
     echo "    1. This opens Raycast settings at Extensions now."
-    echo "    2. Go to Script Commands → Add Directories and pick:"
+    echo "    2. Go to Script Commands → Add Directories."
+    echo "    3. The folder is hidden, so in the picker press Cmd+Shift+G,"
+    echo "       paste the path below, and press Enter:"
     echo "         $SCRIPT_DIR"
-    echo "    3. Search \"Throw Ball\" to confirm, or run Reload Script Commands."
+    echo "    4. Search \"Throw Ball\" to confirm, or run Reload Script Commands."
     open "raycast://extensions" 2>/dev/null || true
 fi

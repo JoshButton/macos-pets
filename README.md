@@ -48,7 +48,9 @@ proprietary — checked), so this is the one manual step. The installer opens
 Raycast settings for you and prints the rest:
 
 1. Raycast Settings → **Extensions** → **Script Commands** → **Add Directories**.
-2. Select `~/.config/raycast/scripts` (created by the installer command above).
+2. `~/.config` is hidden so it won't appear in the picker: press
+   **Cmd+Shift+G**, paste `~/.config/raycast/scripts`, Enter.
+   (Alternative: Cmd+Shift+. toggles hidden files in the picker.)
 3. Back in Raycast root search, the commands appear under the **macOS Pets**
    group (e.g. type "Add Crab" or "Throw Ball"). If they don't show, run the
    **Reload Script Commands** action or restart Raycast.
