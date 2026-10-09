@@ -26,15 +26,43 @@ menu bar.
 
 ## Raycast control
 
+These are [Script Commands](https://docs.raycast.com/script-commands) —
+plain shell scripts, so they work on the free tier with no store publishing.
+There is no separate "v2" to worry about: script commands work in current
+Raycast as long as the directory is registered (step 2 below).
+
 ```bash
-./install.sh --raycast-scripts   # writes 20 script commands
+./install.sh --raycast-scripts   # writes one script per action/species
 ```
 
-This adds pet add/remove, ball throw/place, and hide/show commands to Raycast.
-They talk to the running app through `~/.config/macos-pets/commands/` — the
-same channel as `macos-pets send <add|throw|place|hide|show|toggle|...>`,
-which works from any terminal or script. Point Raycast at
-`~/.config/raycast/scripts` if it doesn't pick them up automatically.
+This adds pet add/remove (per species), add-random, remove-last, clear-all,
+ball throw/place, and hide/show/show-toggle commands. They talk to the running
+app through `~/.config/macos-pets/commands/` — the same channel as
+`macos-pets send <add|remove|throw|place|hide|show|toggle|...>` from any
+terminal or script.
+
+### One-time Raycast setup (per machine)
+
+Raycast does not auto-load script folders — the directory must be registered:
+
+1. Open Raycast Settings → **Extensions** → **Script Commands** → **Add Directories**.
+2. Select `~/.config/raycast/scripts` (create it first if needed — the
+   installer command above does).
+3. Back in Raycast root search, the commands appear under the **macOS Pets**
+   group (e.g. type "Add Crab" or "Throw Ball"). If they don't show, run the
+   **Reload Script Commands** action or restart Raycast.
+
+### Troubleshooting
+
+- **Commands don't appear**: the directory in step 1 is the usual cause.
+  Verify with `ls ~/.config/raycast/scripts/*.sh` (you should see ~60 files)
+  and that they are executable (`chmod +x` is applied by the installer).
+- **Command runs but nothing happens**: the macOS Pets app must be running —
+  scripts queue into `~/.config/macos-pets/commands/` and the app drains that
+  folder every half second. Start the app first.
+- **Stale species list**: re-run `./install.sh --raycast-scripts` after
+  updating; scripts embed the installed app path, so regenerate after moving
+  the installation.
 
 ## Sharing
 
