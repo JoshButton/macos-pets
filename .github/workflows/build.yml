@@ -2,13 +2,15 @@ name: build
 
 on:
   push:
+    tags:
+      - "v*"
   pull_request:
 
 jobs:
   build:
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
 
       - name: Check upstream artwork intact
         run: |
@@ -48,3 +50,29 @@ jobs:
         with:
           name: macOS-Pets-app
           path: dist/macOS Pets.app
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: macos-14
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Swift toolchain
+        run: |
+          cand=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+          sudo xcode-select -s "$cand"
+
+      - name: Assemble .app bundle
+        run: ./install.sh --bundle-only ./dist
+
+      - name: Zip for distribution
+        run: ditto -c -k --keepParent "dist/macOS Pets.app" "dist/macOS-Pets.zip"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/macOS-Pets.zip
+          generate_release_notes: true
