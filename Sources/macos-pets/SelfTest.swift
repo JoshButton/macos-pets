@@ -355,9 +355,19 @@ enum SelfTest {
         var caught = false
         for _ in 0..<600 {
             world.step(dt: 1.0 / 60.0, ball: &ball, cursor: nil)
-            if case .fetching = world.pets[0].activity { caught = true; break }
+            if case .holding = world.pets[0].activity { caught = true; break }
         }
-        expect(caught, "pet close to a flying ball catches it")
+        expect(caught, "pet close to a flying ball catches it and holds")
+        // Holding parades home walking (never gliding on static carry art).
+        for _ in 0..<600 {
+            world.step(dt: 1.0 / 60.0, ball: &ball, cursor: nil)
+            if case .fetching = world.pets[0].activity { break }
+        }
+        if case .fetching = world.pets[0].activity {
+            expect(world.pets[0].pose == .walk, "parade home uses the walk gait, not static carry art")
+        } else {
+            expect(false, "holder starts parading home (now \(world.pets[0].activity))")
+        }
         expect(ball?.state == .carried, "caught ball hides (state carried, not left on the ground)")
     }
 
@@ -430,7 +440,7 @@ enum SelfTest {
         let nearActivity = near.pets[0].activity
         let fetched: Bool
         switch nearActivity {
-        case .fetching, .sitting, .idle, .walking: fetched = true
+        case .holding, .fetching, .sitting, .idle, .walking: fetched = true
         default: fetched = false
         }
         expect(fetched, "pet near a rested ball fetches or settles (now \(nearActivity))")
@@ -442,8 +452,10 @@ enum SelfTest {
         var pet = Pet(species: species, position: PetPoint(x: 100, y: 6), displayIndex: 0)
         pet.activity = .chasing
         expect(pet.pose == .run, "chasing uses the run gait")
+        pet.activity = .holding
+        expect(pet.pose == .carry, "holding uses the carry art")
         pet.activity = .fetching
-        expect(pet.pose == .carry, "fetching uses the carry art")
+        expect(pet.pose == .walk, "fetching uses the walk gait")
         pet.activity = .walking(to: PetPoint(x: 900, y: 6))
         expect(pet.pose == .run, "long walks use the run gait")
         pet.activity = .walking(to: PetPoint(x: 120, y: 6))

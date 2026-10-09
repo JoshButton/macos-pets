@@ -15,6 +15,9 @@ public struct Pet: Sendable {
         case sitting
         /// Curled up asleep.
         case sleeping
+        /// Standing still holding the caught ball (painted `with_ball` art, which
+        /// is a standing pose — moving while showing it glides).
+        case holding
         /// Scaling the outer edge of the desktop, heading up to `height`.
         case climbing(toHeight: Double)
         /// Hanging at the top of a climb.
@@ -53,7 +56,8 @@ public struct Pet: Sendable {
             // Long treks use the run gait (upstream has distinct walk/run).
             return abs(target.x - position.x) > 400 ? .run : .walk
         case .chasing: return .run
-        case .fetching: return .carry
+        case .holding: return .carry
+        case .fetching: return .walk
         case .sitting: return .sit
         case .sleeping: return .sleep
         case .climbing: return .climb
@@ -68,7 +72,7 @@ public struct Pet: Sendable {
     public var isAirborne: Bool {
         switch activity {
         case .climbing, .hanging, .descending, .landing: return true
-        case .idle, .walking, .chasing, .fetching, .sitting, .sleeping: return false
+        case .idle, .walking, .chasing, .holding, .fetching, .sitting, .sleeping: return false
         }
     }
 
@@ -278,6 +282,13 @@ public struct PetWorld: Sendable {
                 pet.animationClock = 0
             }
 
+        case .holding:
+            // Stand showing off the catch, then parade it home walking.
+            if pet.animationClock > 2.5 + rng.nextDouble(in: 0...1.5) {
+                pet.activity = .fetching
+                pet.animationClock = 0
+            }
+
         case .sitting:
             if pet.animationClock > 3 + rng.nextDouble(in: 0...2) {
                 pet.activity = decideNextActivity(pet: pet, display: display, cursor: cursor)
@@ -366,11 +377,12 @@ public struct PetWorld: Sendable {
         }
     }
 
-    /// Catches the ball: the pet parades it (painted `with_ball` art) while the
-    /// free ball hides, exactly like upstream hiding the ball canvas on catch.
-    /// It reappears on the next user throw.
+    /// Catches the ball: the pet first stands holding it (painted `with_ball`
+    /// art, a standing pose), then carries it home walking. The free ball
+    /// hides, exactly like upstream hiding the ball canvas on catch, and
+    /// reappears on the next user throw.
     private func catchBall(pet: inout Pet, ball: inout Ball?) {
-        pet.activity = .fetching
+        pet.activity = .holding
         pet.animationClock = 0
         ball?.state = .carried
         ball?.velocity = .zero
